@@ -1,4 +1,13 @@
 "use strict";
+var __spreadArray = (this && this.__spreadArray) || function (to, from, pack) {
+    if (pack || arguments.length === 2) for (var i = 0, l = from.length, ar; i < l; i++) {
+        if (ar || !(i in from)) {
+            if (!ar) ar = Array.prototype.slice.call(from, 0, i);
+            ar[i] = from[i];
+        }
+    }
+    return to.concat(ar || Array.prototype.slice.call(from));
+};
 var ElementCreator = /** @class */ (function () {
     function ElementCreator() {
     }
@@ -65,7 +74,7 @@ var FormGenerator = /** @class */ (function () {
     FormGenerator.prototype.generateForm = function () {
         var _this = this;
         var form = this.elementCreator.createElement('form');
-        var elements = this.config.selects.concat(this.config.fields, this.config.data, this.config.buttons);
+        var elements = __spreadArray(__spreadArray(__spreadArray(__spreadArray([], this.config.selects, true), this.config.fields, true), this.config.data, true), this.config.buttons, true);
         elements.forEach(function (element) {
             _this.formElementCreator.createFormElement(form, element);
         });
@@ -112,42 +121,46 @@ function validateFormErrorStyle() {
         }
     });
 }
-function validationRules(form) {
-    var emailInput = form.querySelector('[name="Email"]');
-    var phoneInput = form.querySelector('[name="Phone"]');
-    var passwordInput = form.querySelector('[name="Password"]');
-    var confirmPasswordInput = form.querySelector('[name="Confirm Password"]');
-    var email = emailInput ? emailInput.value : '';
-    var phone = phoneInput ? phoneInput.value : '';
-    var password = passwordInput ? passwordInput.value : '';
-    var confirmPassword = confirmPasswordInput ? confirmPasswordInput.value : '';
-    var emailRegex = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
-    var phoneNumberValue = parseInt(phone).toString();
-    var formValidator = new FormValidator(form);
-    if (confirmPassword !== password) {
-        formValidator.createElementsValidation('Passwords do not match', '[name="Confirm Password"]');
-    }
-    if (phoneNumberValue.length !== 9) {
-        formValidator.createElementsValidation('Invalid phone number', '[name="Phone"]');
-    }
-    if (emailInput && !emailRegex.test(email)) {
-        formValidator.createElementsValidation('Email is not valid', '[name="Email"]');
-    }
-}
 var FormValidator = /** @class */ (function () {
-    function FormValidator(form) {
-        this.form = form;
+    function FormValidator() {
     }
-    FormValidator.prototype.createElementsValidation = function (errorMsg, elementConfigFields) {
-        var errorMsgElement = document.createElement('p');
-        this.form.appendChild(errorMsgElement);
-        errorMsgElement.textContent = errorMsg;
-        var elementInput = this.form.querySelector(elementConfigFields);
-        if (elementInput) {
+    FormValidator.prototype.validation = function () {
+        var form = document.querySelector('form');
+        var email = form.querySelector('[name="Email"]').value;
+        var phone = form.querySelector('[name="Phone"]').value;
+        var password = form.querySelector('[name="Password"]').value;
+        var confirmPassword = form.querySelector('[name="Confirm Password"]').value;
+        var emailRegex = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+        var phoneNumberValue = parseInt(phone).toString();
+        this.validationRules(confirmPassword !== password, "Passwords do not match", '[name="Confirm Password"]', '.error-pass');
+        this.validationRules(phoneNumberValue.length !== 9, "Invalid phone number", '[name="Phone"]', '.error-phone');
+        this.validationRules(!emailRegex.test(email), "Email is not valid", '[name="Email"]', '.error-email');
+    };
+    FormValidator.prototype.validationRules = function (validationRule, validationError, elementConfigFields, className) {
+        if (validationRule) {
+            this.createValidationElement(validationError, elementConfigFields, className);
+        }
+        else {
+            this.removeValidationError(className);
+        }
+    };
+    FormValidator.prototype.createValidationElement = function (validationError, elementConfigFields, className) {
+        var form = document.querySelector('form');
+        var errorMsg = form.querySelector(className);
+        if (!errorMsg) {
+            var errorMsg_1 = document.createElement('p');
+            errorMsg_1.classList.add(className.substring(1));
+            errorMsg_1.textContent = validationError;
+            var elementInput = form.querySelector(elementConfigFields);
             var elementInputNode = elementInput.parentNode;
-            if (elementInputNode) {
-                elementInputNode.insertBefore(errorMsgElement, elementInput.nextSibling);
-            }
+            elementInputNode.insertBefore(errorMsg_1, elementInput.nextSibling);
+        }
+    };
+    FormValidator.prototype.removeValidationError = function (className) {
+        var form = document.querySelector('form');
+        var errorMsg = form.querySelector(className);
+        if (errorMsg) {
+            errorMsg.remove();
         }
     };
     return FormValidator;
@@ -225,9 +238,10 @@ var config = {
 var formGenerator = new FormGenerator(config);
 var formGeneratorOneStep = new FormGeneratorOneStep(formGenerator);
 var form = formGeneratorOneStep.generateForm();
+var formValidator = new FormValidator();
 document.body.appendChild(form);
 form.addEventListener('submit', function (event) {
     event.preventDefault();
     validateFormErrorStyle();
-    validationRules(form);
+    formValidator.validation();
 });
