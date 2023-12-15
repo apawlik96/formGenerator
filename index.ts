@@ -7,7 +7,6 @@ class ElementCreator {
                 element.setAttribute(key, attributes[key]);
             });
         }
-
         return element;
     }
 }
@@ -57,18 +56,34 @@ class FormElementCreator {
                 this.createInputFields(form, element);
                 break;
             default:
-                console.log('field type not recognized');
+                console.log('field type not recognized', element.class);
         }
     }
 }
 
-class FormGenerator {
-    private config: {
-        fields: Array<{ class: string; name: string; type: string; placeholder: string }>;
-        selects: Array<{ class: string; type: string; name: string; for: string }>;
-        data: Array<{ class: string; type: string; name: string }>;
-        buttons: Array<{ class: string; name: string; type: string; value: string }>;
-    };
+interface Field {
+    class: string;
+    name: string;
+    type: string;
+    placeholder?: string;
+    for?: string;
+    value?: string;
+}
+
+
+interface FormConfig {
+    fields: Array<Field>;
+    selects: Array<Field>;
+    data: Array<Field>;
+    buttons: Array<Field>;
+}
+
+interface FormGeneratorImpl {
+    config: FormConfig;
+}
+
+class FormGenerator implements FormGeneratorImpl {
+    config: FormConfig;
 
     private elementCreator: ElementCreator;
     private formElementCreator: FormElementCreator;
@@ -86,7 +101,6 @@ class FormGenerator {
         elements.forEach((element) => {
             this.formElementCreator.createFormElement(form, element);
         });
-
         return form;
     }
 }

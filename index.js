@@ -60,7 +60,7 @@ var FormElementCreator = /** @class */ (function () {
                 this.createInputFields(form, element);
                 break;
             default:
-                console.log('field type not recognized');
+                console.log('field type not recognized', element.class);
         }
     };
     return FormElementCreator;
