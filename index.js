@@ -191,6 +191,60 @@ var FormValidator = /** @class */ (function () {
     };
     return FormValidator;
 }());
+var FormGeneratorMultiStep = /** @class */ (function () {
+    function FormGeneratorMultiStep(config) {
+        this.config = config;
+        this.currentPageIndex = 0;
+        this.formElementCreator = new FormElementCreator(new ElementCreator());
+    }
+    FormGeneratorMultiStep.prototype.createPage = function (title, fields) {
+        var _this = this;
+        var form = document.createElement('form');
+        form.className = 'form-page';
+        var pageTitle = document.createElement('h2');
+        pageTitle.textContent = title;
+        form.appendChild(pageTitle);
+        fields.forEach(function (fieldName) {
+            _this.formElementCreator.createFormElement(form, config.fields.find(function (field) { return field.name === fieldName; }));
+        });
+        return form;
+    };
+    FormGeneratorMultiStep.prototype.showPreviousPage = function () {
+        if (this.currentPageIndex > 0) {
+            formPages[this.currentPageIndex].element.style.display = 'none';
+            this.currentPageIndex--;
+            formPages[this.currentPageIndex].element.style.display = 'block';
+        }
+    };
+    FormGeneratorMultiStep.prototype.showNextPage = function () {
+        if (this.currentPageIndex < formPages.length - 1) {
+            formPages[this.currentPageIndex].element.style.display = 'none';
+            this.currentPageIndex++;
+            formPages[this.currentPageIndex].element.style.display = 'block';
+        }
+    };
+    FormGeneratorMultiStep.prototype.generateForm = function () {
+        var _this = this;
+        var container = document.createElement('div');
+        formPages.forEach(function (page, index) {
+            var formPage = _this.createPage(page.title, page.fields);
+            formPage.style.display = index === 0 ? 'block' : 'none';
+            container.appendChild(formPage);
+            formPages[index].element = formPage;
+        });
+        var prevButton = document.createElement('button');
+        prevButton.textContent = 'Previous';
+        prevButton.addEventListener('click', function () { return _this.showPreviousPage(); });
+        container.appendChild(prevButton);
+        var nextButton = document.createElement('button');
+        nextButton.textContent = 'Next';
+        nextButton.addEventListener('click', function () { return _this.showNextPage(); });
+        container.appendChild(nextButton);
+        document.body.appendChild(container);
+        return container;
+    };
+    return FormGeneratorMultiStep;
+}());
 var config = {
     fields: [{
             class: 'fields',
@@ -261,9 +315,16 @@ var config = {
         }
     ]
 };
-var formGenerator = new FormGenerator(config);
-var formGeneratorOneStep = new FormGeneratorOneStep(formGenerator);
-var form = formGeneratorOneStep.generateForm();
+var formPages = [
+    { title: 'Step 1', fields: ['Username', 'First Name', 'Last Name'] },
+    { title: 'Step 2', fields: ['Email', 'Phone'] },
+    { title: 'Step 3', fields: ['Password', 'Confirm Password'] },
+];
+var formGenerator = new FormGeneratorMultiStep(config);
+var form = formGenerator.generateForm();
+// const formGenerator = new FormGenerator(config);
+// const formGeneratorOneStep = new FormGeneratorOneStep(formGenerator);
+// const form = formGeneratorOneStep.generateForm();
 var formValidator = new FormValidator();
 document.body.appendChild(form);
 form.addEventListener('submit', function (event) {

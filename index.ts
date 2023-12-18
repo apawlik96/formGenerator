@@ -299,6 +299,74 @@ class FormValidator {
 
 }
 
+class FormGeneratorMultiStep {
+    config: any;
+    currentPageIndex: number;
+    formElementCreator: FormElementCreator;
+
+    constructor(config: any) {
+        this.config = config;
+        this.currentPageIndex = 0;
+        this.formElementCreator = new FormElementCreator(new ElementCreator());
+    }
+
+    createPage(title: string, fields: string[]): HTMLFormElement {
+        const form = document.createElement('form') as HTMLFormElement;
+        form.className = 'form-page';
+        const pageTitle = document.createElement('h2');
+        pageTitle.textContent = title;
+        form.appendChild(pageTitle);
+    
+        fields.forEach((fieldName) => {
+            this.formElementCreator.createFormElement(form, config.fields.find((field: any) => field.name === fieldName));
+        });
+    
+        return form;
+    }
+    
+
+    showPreviousPage(): void {
+        if (this.currentPageIndex > 0) {
+            (formPages[this.currentPageIndex] as any).element.style.display = 'none';
+            this.currentPageIndex--;
+            (formPages[this.currentPageIndex] as any).element.style.display = 'block';
+        }
+    }
+
+    showNextPage(): void {
+        if (this.currentPageIndex < formPages.length - 1) {
+            (formPages[this.currentPageIndex] as any).element.style.display = 'none';
+            this.currentPageIndex++;
+            (formPages[this.currentPageIndex] as any).element.style.display = 'block';
+        }
+    }
+
+    generateForm(): HTMLElement {
+        const container = document.createElement('div');
+
+        formPages.forEach((page, index) => {
+            const formPage = this.createPage(page.title, page.fields);
+            formPage.style.display = index === 0 ? 'block' : 'none';
+            container.appendChild(formPage);
+            (formPages[index] as any).element = formPage;
+        });
+
+        const prevButton = document.createElement('button');
+        prevButton.textContent = 'Previous';
+        prevButton.addEventListener('click', () => this.showPreviousPage());
+        container.appendChild(prevButton);
+
+        const nextButton = document.createElement('button');
+        nextButton.textContent = 'Next';
+        nextButton.addEventListener('click', () => this.showNextPage());
+        container.appendChild(nextButton);
+
+        document.body.appendChild(container);
+
+        return container;
+    }
+}
+
 const config = {
     fields: [{
         class: 'fields',
@@ -370,9 +438,18 @@ const config = {
     ]
 };
 
-const formGenerator = new FormGenerator(config);
-const formGeneratorOneStep = new FormGeneratorOneStep(formGenerator);
-const form = formGeneratorOneStep.generateForm();
+const formPages = [
+    { title: 'Step 1', fields: ['Username', 'First Name', 'Last Name'] },
+    { title: 'Step 2', fields: ['Email', 'Phone'] },
+    { title: 'Step 3', fields: ['Password', 'Confirm Password'] },
+];
+
+const formGenerator = new FormGeneratorMultiStep(config);
+const form = formGenerator.generateForm();
+
+// const formGenerator = new FormGenerator(config);
+// const formGeneratorOneStep = new FormGeneratorOneStep(formGenerator);
+// const form = formGeneratorOneStep.generateForm();
 
 const formValidator = new FormValidator();
 
