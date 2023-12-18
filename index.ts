@@ -21,7 +21,21 @@ class FormElementCreator {
     createInput(form: HTMLFormElement, element: any): void {
         const input = this.elementCreator.createElement('input') as HTMLInputElement;
         this.setInputAttributes(input, element);
-        form.appendChild(input);
+        if (element.name === 'Phone') {
+            const select = this.elementCreator.createElement('select') as HTMLSelectElement;
+            const optionPL = this.elementCreator.createElement('option') as HTMLOptionElement;
+            optionPL.value = 'PL';
+            optionPL.text = 'Poland (+48)';
+            select.appendChild(optionPL);
+            const optionUS = this.elementCreator.createElement('option') as HTMLOptionElement;
+            optionUS.value = 'US';
+            optionUS.text = 'United States (+1)';
+            select.appendChild(optionUS);
+            form.appendChild(select);
+            form.appendChild(input);
+        } else {
+            form.appendChild(input);
+        }
     }
 
     createLabel(form: HTMLFormElement, element: any): void {
@@ -228,16 +242,29 @@ class FormValidator {
     validation(): void {
         const form = document.querySelector('form') as HTMLFormElement;
         const email = (form.querySelector('[name="Email"]') as HTMLInputElement).value;
-        const phone = (form.querySelector('[name="Phone"]') as HTMLInputElement).value;
         const password = (form.querySelector('[name="Password"]') as HTMLInputElement).value;
         const confirmPassword = (form.querySelector('[name="Confirm Password"]') as HTMLInputElement).value;
 
         const emailRegex: RegExp = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
-        const phoneNumberValue: string = parseInt(phone).toString();
 
         this.validationRules(confirmPassword !== password, "Passwords do not match", '[name="Confirm Password"]', '.error-pass');
-        this.validationRules(phoneNumberValue.length !== 9, "Invalid phone number", '[name="Phone"]', '.error-phone');
         this.validationRules(!emailRegex.test(email), "Email is not valid", '[name="Email"]', '.error-email');
+        this.validationNumber();
+    }
+
+    validationNumber() {
+        const phoneNumberOption = (form.querySelector('option') as HTMLOptionElement).text;
+        const phone = (form.querySelector('[name="Phone"]') as HTMLInputElement).value;
+    
+        const cleanedNumber = phone.replace(/\D/g, '');
+        const polishRegex = /^(?:\+48|0)?[1-9]\d{8}$/;
+        const americanRegex = /^(?:\+1)?[2-9]\d{9}$/;
+    
+        if(phoneNumberOption === "Poland (+48)") {
+            this.validationRules (!polishRegex.test(cleanedNumber), "Invalid phone number", '[name="Phone"]', '.error-phone')
+        } else if(phoneNumberOption === "United States (+1)"){
+            this.validationRules (!americanRegex.test(cleanedNumber), "Invalid phone number", '[name="Phone"]', '.error-phone')
+        }
     }
 
     validationRules(validationRule: boolean, validationError: string, elementConfigFields: string, className: string): void {

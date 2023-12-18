@@ -29,7 +29,22 @@ var FormElementCreator = /** @class */ (function () {
     FormElementCreator.prototype.createInput = function (form, element) {
         var input = this.elementCreator.createElement('input');
         this.setInputAttributes(input, element);
-        form.appendChild(input);
+        if (element.name === 'Phone') {
+            var select = this.elementCreator.createElement('select');
+            var optionPL = this.elementCreator.createElement('option');
+            optionPL.value = 'PL';
+            optionPL.text = 'Poland (+48)';
+            select.appendChild(optionPL);
+            var optionUS = this.elementCreator.createElement('option');
+            optionUS.value = 'US';
+            optionUS.text = 'United States (+1)';
+            select.appendChild(optionUS);
+            form.appendChild(select);
+            form.appendChild(input);
+        }
+        else {
+            form.appendChild(input);
+        }
     };
     FormElementCreator.prototype.createLabel = function (form, element) {
         var label = this.elementCreator.createElement('label');
@@ -127,14 +142,25 @@ var FormValidator = /** @class */ (function () {
     FormValidator.prototype.validation = function () {
         var form = document.querySelector('form');
         var email = form.querySelector('[name="Email"]').value;
-        var phone = form.querySelector('[name="Phone"]').value;
         var password = form.querySelector('[name="Password"]').value;
         var confirmPassword = form.querySelector('[name="Confirm Password"]').value;
         var emailRegex = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
-        var phoneNumberValue = parseInt(phone).toString();
         this.validationRules(confirmPassword !== password, "Passwords do not match", '[name="Confirm Password"]', '.error-pass');
-        this.validationRules(phoneNumberValue.length !== 9, "Invalid phone number", '[name="Phone"]', '.error-phone');
         this.validationRules(!emailRegex.test(email), "Email is not valid", '[name="Email"]', '.error-email');
+        this.validationNumber();
+    };
+    FormValidator.prototype.validationNumber = function () {
+        var phoneNumberOption = form.querySelector('option').text;
+        var phone = form.querySelector('[name="Phone"]').value;
+        var cleanedNumber = phone.replace(/\D/g, '');
+        var polishRegex = /^(?:\+48|0)?[1-9]\d{8}$/;
+        var americanRegex = /^(?:\+1)?[2-9]\d{9}$/;
+        if (phoneNumberOption === "Poland (+48)") {
+            this.validationRules(!polishRegex.test(cleanedNumber), "Invalid phone number", '[name="Phone"]', '.error-phone');
+        }
+        else if (phoneNumberOption === "United States (+1)") {
+            this.validationRules(!americanRegex.test(cleanedNumber), "Invalid phone number", '[name="Phone"]', '.error-phone');
+        }
     };
     FormValidator.prototype.validationRules = function (validationRule, validationError, elementConfigFields, className) {
         if (validationRule) {
