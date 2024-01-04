@@ -1,0 +1,31 @@
+{
+  "name": "form-generator",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "tsc",
+    "dev": "npm run build && node src/index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/apawlik96/formGenerator.git"
+  },
+  "keywords": [
+    "typescript",
+    "library",
+    "form generator",
+    "validator",
+    "step form"
+  ],
+  "author": "Anna Pawlik",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/apawlik96/formGenerator/issues"
+  },
+  "homepage": "https://github.com/apawlik96/formGenerator#readme",
+  "devDependencies": {
+    "typescript": "3.5"
+  }
+}
