@@ -1,27 +1,3 @@
-export function validateFormErrorStyle(): void {
-    const form = document.querySelector('form') as HTMLFormElement;
-    const elements = form.querySelectorAll('input, select');
-
-    const errorStyle = document.createElement('style');
-    errorStyle.textContent = `
-        .error {
-            border: 1px solid #ff0000;
-        }
-    `;
-
-    document.head.appendChild(errorStyle);
-
-    elements.forEach((element) => {
-        if ((element instanceof HTMLInputElement || element instanceof HTMLSelectElement) &&
-            (element as HTMLInputElement | HTMLSelectElement).value.trim() === '' && element.type !== 'submit') {
-            element.classList.add('error');
-        } else {
-            element.classList.remove('error');
-        }
-    });
-
-}
-
 export class FormValidator {
 
     private form: HTMLFormElement;
@@ -38,9 +14,29 @@ export class FormValidator {
 
         const emailRegex: RegExp = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
 
+        this.isStrongPassword(password);
         this.validationRules(confirmPassword !== password, "Passwords do not match", '[name="Confirm Password"]', '.error-pass');
         this.validationRules(!emailRegex.test(email), "Email is not valid", '[name="Email"]', '.error-email');
         this.validationNumber();
+    }
+
+    isStrongPassword(password: string) {
+        const requirements = [
+            { regex: /.{8,}/, message: 'at least 8 characters' },
+            { regex: /[A-Z]/, message: 'at least one uppercase letter' },
+            { regex: /[a-z]/, message: 'at least one lowercase letter' },
+            { regex: /\d/, message: 'at least one digit' },
+            { regex: /[!@#$%^&*(),.?":{}|<>]/, message: 'at least one special character' },
+        ];
+    
+        const missingSigns = requirements.filter(({ regex }) => !regex.test(password)).map(({ message }) => message);
+    
+        if (missingSigns.length > 0){
+            this.createValidationElement('Password is not strong enough. Missing: ' + missingSigns.join(', '),'[name="Password"]', '.error-pass');
+        } else {
+            this.removeValidationError('.error-pass')
+        }
+        
     }
 
     validationNumber() {

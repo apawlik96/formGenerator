@@ -14,6 +14,19 @@ var FormGeneratorMultiStep = /** @class */ (function () {
         this.formElementCreator = new form_element_creator_1.FormElementCreator(new element_creator_1.ElementCreator());
         new form_styles_1.formStyles();
     }
+    FormGeneratorMultiStep.prototype.createStepIndicators = function (page, step) {
+        var stepIndicatorContainer = document.createElement('div');
+        stepIndicatorContainer.className = 'step-indicator-container';
+        page.appendChild(stepIndicatorContainer);
+        for (var i = 1; i <= config_1.formPages.length; i++) {
+            var stepIndicator = document.createElement('div');
+            stepIndicator.className = 'step-indicator';
+            stepIndicator.textContent = i.toString();
+            stepIndicatorContainer.appendChild(stepIndicator);
+        }
+        var stepIndicators = stepIndicatorContainer.querySelectorAll('.step-indicator');
+        stepIndicators[step - 1].classList.add('current-step');
+    };
     FormGeneratorMultiStep.prototype.createPage = function (title, fields) {
         var _this = this;
         var form = document.createElement('form');
@@ -60,12 +73,11 @@ var FormGeneratorMultiStep = /** @class */ (function () {
     return FormGeneratorMultiStep;
 }());
 exports.FormGeneratorMultiStep = FormGeneratorMultiStep;
-var formGenerator = new FormGeneratorMultiStep(config_2.config);
+var formGenerator = new FormGeneratorMultiStep(config_2.formConfig);
 var form = formGenerator.generateForm();
 var formValidator = new validator_1.FormValidator();
 document.body.appendChild(form);
-form.addEventListener('submit', function (event) {
+form.addEventListener('next', function (event) {
     event.preventDefault();
-    (0, validator_1.validateFormErrorStyle)();
     formValidator.validation();
 });

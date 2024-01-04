@@ -1,8 +1,8 @@
 import { ElementCreator } from "./element-creator";
 import { FormElementCreator } from "./form-element-creator";
 import { formStyles } from "./form-styles";
-import { config } from "./config";
-import { FormValidator,validateFormErrorStyle } from "./validator";
+import { formConfig } from "./config";
+import { FormValidator } from "./validator";
 
 interface Field {
     class: string;
@@ -21,11 +21,11 @@ interface FormConfig {
     buttons: Array<Field>;
 }
 
-interface FormGeneratorImpl {
+interface FormGenerator {
     config: FormConfig;
 }
 
-export class FormGenerator implements FormGeneratorImpl {
+export class FormGeneratorImpl implements FormGenerator {
     config: FormConfig;
 
     private elementCreator: ElementCreator;
@@ -49,9 +49,9 @@ export class FormGenerator implements FormGeneratorImpl {
 }
 
 export class FormGeneratorOneStep {
-    private formGenerator: FormGenerator;
+    private formGenerator: FormGeneratorImpl;
 
-    constructor(formGenerator: FormGenerator) {
+    constructor(formGenerator: FormGeneratorImpl) {
         this.formGenerator = formGenerator;
         new formStyles();
     }
@@ -62,7 +62,7 @@ export class FormGeneratorOneStep {
     }
 }
 
-const formGenerator = new FormGenerator(config);
+const formGenerator = new FormGeneratorImpl(formConfig);
 const formGeneratorOneStep = new FormGeneratorOneStep(formGenerator);
 const form = formGeneratorOneStep.generateForm();
 
@@ -72,6 +72,5 @@ document.body.appendChild(form);
 
 form.addEventListener('submit', function (event) {
     event.preventDefault();
-    validateFormErrorStyle();
     formValidator.validation();
 });

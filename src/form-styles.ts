@@ -69,6 +69,22 @@ export class formStyles  {
         .error {
             border: 1px solid #ff0000;
         }
+
+        .step-indicator {
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background-color: #ddd;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+        }
+        
+        .step-indicator.current-step {
+            background-color: #4caf50;
+            color: white;
+        }
         `;
 
         const styleElement = document.createElement('style');

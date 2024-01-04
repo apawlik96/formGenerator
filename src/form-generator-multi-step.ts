@@ -2,8 +2,8 @@ import { FormElementCreator } from "./form-element-creator";
 import { ElementCreator } from "./element-creator";
 import { formPages } from "./config";
 import { formStyles } from "./form-styles";
-import { config } from "./config";
-import { FormValidator,validateFormErrorStyle } from "./validator";
+import { formConfig } from "./config";
+import { FormValidator } from "./validator";
 
 export class FormGeneratorMultiStep {
     config: any;
@@ -15,6 +15,22 @@ export class FormGeneratorMultiStep {
         this.currentPageIndex = 0;
         this.formElementCreator = new FormElementCreator(new ElementCreator());
         new formStyles();
+    }
+
+    createStepIndicators(page: HTMLFormElement, step: number): void {
+        const stepIndicatorContainer = document.createElement('div');
+        stepIndicatorContainer.className = 'step-indicator-container';
+        page.appendChild(stepIndicatorContainer);
+    
+        for (let i = 1; i <= formPages.length; i++) {
+            const stepIndicator = document.createElement('div');
+            stepIndicator.className = 'step-indicator';
+            stepIndicator.textContent = i.toString();
+            stepIndicatorContainer.appendChild(stepIndicator);
+        }
+    
+        const stepIndicators = stepIndicatorContainer.querySelectorAll('.step-indicator');
+        stepIndicators[step - 1].classList.add('current-step');
     }
 
     createPage(title: string, fields: string[]): HTMLFormElement {
@@ -72,15 +88,14 @@ export class FormGeneratorMultiStep {
     }
 }
 
-const formGenerator = new FormGeneratorMultiStep(config);
+const formGenerator = new FormGeneratorMultiStep(formConfig);
 const form = formGenerator.generateForm();
 
 const formValidator = new FormValidator();
 
 document.body.appendChild(form);
 
-form.addEventListener('submit', function (event) {
+form.addEventListener('next', function (event) {
     event.preventDefault();
-    validateFormErrorStyle();
     formValidator.validation();
 });

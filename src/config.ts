@@ -1,4 +1,4 @@
-export const config = {
+export const formConfig = {
     fields: [{
         class: 'fields',
         name: 'Username',
