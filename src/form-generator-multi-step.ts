@@ -33,18 +33,25 @@ export class FormGeneratorMultiStep {
         stepIndicators[step - 1].classList.add('current-step');
     }
 
-    createPage(title: string, fields: string[]): HTMLFormElement {
+    createPage = async (title: string, fields: string[]) => {
         const form = document.createElement('form') as HTMLFormElement;
         form.className = 'form-page';
         const pageTitle = document.createElement('h2');
         pageTitle.textContent = title;
         form.appendChild(pageTitle);
-    
-        fields.forEach((fieldName) => {
-            this.formElementCreator.createFormElement(form, this.config.fields.find((field: any) => field.name === fieldName));
-        });
 
         const formElementCreator = new FormElementCreator(new ElementCreator());
+
+        for (const fieldName of fields) {
+            const element = this.config.fields.find((field: any) => field.name === fieldName);
+            if (element) {
+                if (element.name === 'Phone') {
+                    await formElementCreator.createPhoneInput(form, element);
+                } else {
+                    formElementCreator.createFormElement(form, element);
+                }
+            }
+        }
 
         const prevButton = formElementCreator.createButton('Previous', () => this.showPreviousPage());
         form.appendChild(prevButton);
@@ -54,7 +61,6 @@ export class FormGeneratorMultiStep {
     
         return form;
     }
-    
 
     showPreviousPage(): void {
         if (this.currentPageIndex > 0) {
@@ -72,15 +78,16 @@ export class FormGeneratorMultiStep {
         }
     }
 
-    generateForm(): HTMLElement {
+    generateForm = async (): Promise<HTMLDivElement> => {
         const container = document.createElement('div');
 
-        formPages.forEach((page, index) => {
-            const formPage = this.createPage(page.title, page.fields);
+        for (let index = 0; index < formPages.length; index++) {
+            const page = formPages[index];
+            const formPage = await this.createPage(page.title, page.fields);
             formPage.style.display = index === 0 ? 'block' : 'none';
             container.appendChild(formPage);
             (formPages[index] as any).element = formPage;
-        });
+        }
 
         document.body.appendChild(container);
 
@@ -89,13 +96,12 @@ export class FormGeneratorMultiStep {
 }
 
 const formGenerator = new FormGeneratorMultiStep(formConfig);
-const form = formGenerator.generateForm();
-
 const formValidator = new FormValidator();
 
-document.body.appendChild(form);
-
-form.addEventListener('next', function (event) {
-    event.preventDefault();
-    formValidator.validation();
+formGenerator.generateForm().then(form => {
+    document.body.appendChild(form);
+    form.addEventListener('submit', function (event) {
+        event.preventDefault();
+        formValidator.validation();
+    });
 });

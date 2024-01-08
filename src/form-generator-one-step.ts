@@ -37,15 +37,22 @@ export class FormGeneratorImpl implements FormGenerator {
         this.formElementCreator = new FormElementCreator(this.elementCreator);
     }
 
-    generateForm(): HTMLFormElement {
-        const form = this.elementCreator.createElement('form') as HTMLFormElement;
+    generateForm = async (): Promise<HTMLFormElement> => {
+        const form = document.createElement('form');
+        document.body.appendChild(form);
+
         const elements = [...this.config.selects, ...this.config.fields, ...this.config.data, ...this.config.buttons];
 
-        elements.forEach((element) => {
-            this.formElementCreator.createFormElement(form, element);
-        });
+        for (const element of elements) {
+            if (element.name === 'Phone') {
+                await this.formElementCreator.createPhoneInput(form, element);
+            } else {
+                this.formElementCreator.createFormElement(form, element);
+            }
+        }
+
         return form;
-    }
+    };
 }
 
 export class FormGeneratorOneStep {
@@ -56,21 +63,21 @@ export class FormGeneratorOneStep {
         new formStyles();
     }
 
-    generateForm(): HTMLFormElement {
-        const form = this.formGenerator.generateForm();
-        return form;
+    async generateForm(): Promise<void> {
+        const form = await this.formGenerator.generateForm();
+        document.body.appendChild(form);
     }
 }
 
 const formGenerator = new FormGeneratorImpl(formConfig);
 const formGeneratorOneStep = new FormGeneratorOneStep(formGenerator);
-const form = formGeneratorOneStep.generateForm();
 
 const formValidator = new FormValidator();
 
-document.body.appendChild(form);
+formGenerator.generateForm().then(form => {
 
-form.addEventListener('submit', function (event) {
-    event.preventDefault();
-    formValidator.validation();
+    form.addEventListener('submit', function (event) {
+        event.preventDefault();
+        formValidator.validation();
+    });
 });

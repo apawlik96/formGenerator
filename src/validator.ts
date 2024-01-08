@@ -15,7 +15,7 @@ export class FormValidator {
         const emailRegex: RegExp = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
 
         this.isStrongPassword(password);
-        this.validationRules(confirmPassword !== password, "Passwords do not match", '[name="Confirm Password"]', '.error-pass');
+        this.validationRules(confirmPassword !== password, "Passwords do not match", '[name="Confirm Password"]', '.error-con-pass');
         this.validationRules(!emailRegex.test(email), "Email is not valid", '[name="Email"]', '.error-email');
         this.validationNumber();
     }
@@ -39,18 +39,14 @@ export class FormValidator {
         
     }
 
-    validationNumber() {
-        const phoneNumberOption = (this.form.querySelector('option') as HTMLOptionElement).text;
-        const phone = (this.form.querySelector('[name="Phone"]') as HTMLInputElement).value;
-    
-        const cleanedNumber = phone.replace(/\D/g, '');
-        const polishRegex = /^(?:\+48|0)?[1-9]\d{8}$/;
-        const americanRegex = /^(?:\+1)?[2-9]\d{9}$/;
-    
-        if(phoneNumberOption === "Poland (+48)") {
-            this.validationRules (!polishRegex.test(cleanedNumber), "Invalid phone number", '[name="Phone"]', '.error-phone')
-        } else if(phoneNumberOption === "United States (+1)"){
-            this.validationRules (!americanRegex.test(cleanedNumber), "Invalid phone number", '[name="Phone"]', '.error-phone')
+    validationNumber(): void {
+        const form = document.querySelector('form') as HTMLFormElement;
+        const phoneInput = (form.querySelector('[name="Phone"]') as HTMLInputElement).value;
+        const selectedOption = (form.querySelector('option:checked') as HTMLOptionElement);
+        if (selectedOption) {
+            const selectElementValue = selectedOption.value;
+            const isValid = phoneInput.startsWith(selectElementValue);
+            this.validationRules(!isValid, "Invalid phone number", '[name="Phone"]', '.error-phone')
         }
     }
 
@@ -83,5 +79,4 @@ export class FormValidator {
             errorMsg.remove();
         }
     }
-
 }
