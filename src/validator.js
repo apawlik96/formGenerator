@@ -12,7 +12,7 @@ var FormValidator = /** @class */ (function () {
         var confirmPassword = form.querySelector('[name="Confirm Password"]').value;
         var emailRegex = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
         this.isStrongPassword(password);
-        this.validationRules(confirmPassword !== password, "Passwords do not match", '[name="Confirm Password"]', '.error-pass');
+        this.validationRules(confirmPassword !== password, "Passwords do not match", '[name="Confirm Password"]', '.error-con-pass');
         this.validationRules(!emailRegex.test(email), "Email is not valid", '[name="Email"]', '.error-email');
         this.validationNumber();
     };
@@ -39,16 +39,13 @@ var FormValidator = /** @class */ (function () {
         }
     };
     FormValidator.prototype.validationNumber = function () {
-        var phoneNumberOption = this.form.querySelector('option').text;
-        var phone = this.form.querySelector('[name="Phone"]').value;
-        var cleanedNumber = phone.replace(/\D/g, '');
-        var polishRegex = /^(?:\+48|0)?[1-9]\d{8}$/;
-        var americanRegex = /^(?:\+1)?[2-9]\d{9}$/;
-        if (phoneNumberOption === "Poland (+48)") {
-            this.validationRules(!polishRegex.test(cleanedNumber), "Invalid phone number", '[name="Phone"]', '.error-phone');
-        }
-        else if (phoneNumberOption === "United States (+1)") {
-            this.validationRules(!americanRegex.test(cleanedNumber), "Invalid phone number", '[name="Phone"]', '.error-phone');
+        var form = document.querySelector('form');
+        var phoneInput = form.querySelector('[name="Phone"]').value;
+        var selectedOption = form.querySelector('option:checked');
+        if (selectedOption) {
+            var selectElementValue = selectedOption.value;
+            var isValid = phoneInput.startsWith(selectElementValue);
+            this.validationRules(!isValid, "Invalid phone number", '[name="Phone"]', '.error-phone');
         }
     };
     FormValidator.prototype.validationRules = function (validationRule, validationError, elementConfigFields, className) {
