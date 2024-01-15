@@ -45,50 +45,51 @@ var __spreadArray = (this && this.__spreadArray) || function (to, from, pack) {
     return to.concat(ar || Array.prototype.slice.call(from));
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.FormGeneratorOneStep = exports.FormGeneratorImpl = void 0;
-var element_creator_1 = require("./element-creator");
-var form_element_creator_1 = require("./form-element-creator");
-var form_styles_1 = require("./form-styles");
+exports.FormGeneratorOneStep = exports.FormGenerator = void 0;
 var config_1 = require("./config");
+var element_creator_1 = require("./element-creator");
+var form_element_creation_context_1 = require("./form-element-creation-context");
+var form_element_creator_1 = require("./form-element-creator");
+var select_element_creation_strategy_1 = require("./select-element-creation-strategy");
+var input_creation_strategy_1 = require("./input-creation-strategy");
+var field_element_creation_strategy_1 = require("./field-element-creation-strategy");
+var form_styles_1 = require("./form-styles");
 var validator_1 = require("./validator");
-var FormGeneratorImpl = /** @class */ (function () {
-    function FormGeneratorImpl(config) {
+var FormGenerator = /** @class */ (function () {
+    function FormGenerator(config) {
         var _this = this;
-        this.generateForm = function () { return __awaiter(_this, void 0, void 0, function () {
+        this.createFormElement = function () { return __awaiter(_this, void 0, void 0, function () {
             var form, elements, _i, elements_1, element;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
-                        form = document.createElement('form');
-                        document.body.appendChild(form);
-                        elements = __spreadArray(__spreadArray(__spreadArray(__spreadArray([], this.config.selects, true), this.config.fields, true), this.config.data, true), this.config.buttons, true);
+                        form = this.elementCreator.createElement('form');
+                        elements = __spreadArray(__spreadArray(__spreadArray([], this.config.selects, true), this.config.fields, true), this.config.buttons, true);
                         _i = 0, elements_1 = elements;
                         _a.label = 1;
                     case 1:
-                        if (!(_i < elements_1.length)) return [3 /*break*/, 5];
+                        if (!(_i < elements_1.length)) return [3 /*break*/, 4];
                         element = elements_1[_i];
-                        if (!(element.name === 'Phone')) return [3 /*break*/, 3];
-                        return [4 /*yield*/, this.formElementCreator.createPhoneInput(form, element)];
+                        return [4 /*yield*/, this.creationStrategy.create(form, element)];
                     case 2:
                         _a.sent();
-                        return [3 /*break*/, 4];
+                        _a.label = 3;
                     case 3:
-                        this.formElementCreator.createFormElement(form, element);
-                        _a.label = 4;
-                    case 4:
                         _i++;
                         return [3 /*break*/, 1];
-                    case 5: return [2 /*return*/, form];
+                    case 4: return [2 /*return*/, form];
                 }
             });
         }); };
         this.config = config;
         this.elementCreator = new element_creator_1.ElementCreator();
-        this.formElementCreator = new form_element_creator_1.FormElementCreator(this.elementCreator);
+        this.creationStrategy = new form_element_creator_1.FormElementCreation(new select_element_creation_strategy_1.SelectElementCreationStrategy(this.elementCreator, new input_creation_strategy_1.InputCreationStrategy(this.elementCreator)), new input_creation_strategy_1.InputCreationStrategy(this.elementCreator), new field_element_creation_strategy_1.FieldElementCreationStrategy(this.elementCreator));
+        this.formElementCreationContext = new form_element_creation_context_1.FormElementCreationContext(this.creationStrategy);
+        new form_styles_1.formStyles();
     }
-    return FormGeneratorImpl;
+    return FormGenerator;
 }());
-exports.FormGeneratorImpl = FormGeneratorImpl;
+exports.FormGenerator = FormGenerator;
 var FormGeneratorOneStep = /** @class */ (function () {
     function FormGeneratorOneStep(formGenerator) {
         this.formGenerator = formGenerator;
@@ -99,11 +100,11 @@ var FormGeneratorOneStep = /** @class */ (function () {
             var form;
             return __generator(this, function (_a) {
                 switch (_a.label) {
-                    case 0: return [4 /*yield*/, this.formGenerator.generateForm()];
+                    case 0: return [4 /*yield*/, this.formGenerator.createFormElement()];
                     case 1:
                         form = _a.sent();
                         document.body.appendChild(form);
-                        return [2 /*return*/];
+                        return [2 /*return*/, form];
                 }
             });
         });
@@ -111,10 +112,10 @@ var FormGeneratorOneStep = /** @class */ (function () {
     return FormGeneratorOneStep;
 }());
 exports.FormGeneratorOneStep = FormGeneratorOneStep;
-var formGenerator = new FormGeneratorImpl(config_1.formConfig);
+var formGenerator = new FormGenerator(config_1.formConfig);
 var formGeneratorOneStep = new FormGeneratorOneStep(formGenerator);
 var formValidator = new validator_1.FormValidator();
-formGenerator.generateForm().then(function (form) {
+formGeneratorOneStep.generateForm().then(function (form) {
     form.addEventListener('submit', function (event) {
         event.preventDefault();
         formValidator.validation();

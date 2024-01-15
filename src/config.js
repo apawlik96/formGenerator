@@ -58,11 +58,6 @@ exports.formConfig = {
             for: 'Male'
         }
     ],
-    data: [{
-            class: 'data',
-            type: 'date',
-            name: 'depart'
-        },],
     buttons: [{
             class: 'buttons',
             name: 'submit',

@@ -36,105 +36,43 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
     }
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.FormElementCreator = void 0;
-var FormElementCreator = /** @class */ (function () {
-    function FormElementCreator(elementCreator) {
+exports.FormElementCreation = void 0;
+var FormElementCreation = /** @class */ (function () {
+    function FormElementCreation(selectElementCreationStrategy, inputCreationStrategy, fieldElementCreationStrategy) {
         var _this = this;
-        this.createPhoneInput = function (form, element) { return __awaiter(_this, void 0, void 0, function () {
-            var paragraph, select, input, countryTelMap;
-            var _this = this;
-            return __generator(this, function (_a) {
-                switch (_a.label) {
+        this.create = function (form, element) { return __awaiter(_this, void 0, void 0, function () {
+            var _a;
+            return __generator(this, function (_b) {
+                switch (_b.label) {
                     case 0:
-                        paragraph = this.elementCreator.createElement('div');
-                        paragraph.textContent = element.name;
-                        form.appendChild(paragraph);
-                        select = this.elementCreator.createElement('select');
-                        input = this.elementCreator.createElement('input');
-                        this.setInputAttributes(input, element);
-                        return [4 /*yield*/, this.countryApi()];
+                        _a = element.class;
+                        switch (_a) {
+                            case 'selects': return [3 /*break*/, 1];
+                            case 'buttons': return [3 /*break*/, 2];
+                            case 'fields': return [3 /*break*/, 3];
+                        }
+                        return [3 /*break*/, 5];
                     case 1:
-                        countryTelMap = _a.sent();
-                        countryTelMap.forEach(function (diallingCode, countryName) {
-                            var option = _this.elementCreator.createElement('option');
-                            option.text = "".concat(countryName);
-                            option.value = "".concat(diallingCode);
-                            select.appendChild(option);
-                        });
-                        form.appendChild(select);
-                        form.appendChild(input);
-                        return [2 /*return*/];
+                        this.selectElementCreationStrategy.create(form, element);
+                        return [3 /*break*/, 6];
+                    case 2:
+                        this.inputCreationStrategy.create(form, element);
+                        return [3 /*break*/, 6];
+                    case 3: return [4 /*yield*/, this.fieldElementCreationStrategy.create(form, element)];
+                    case 4:
+                        _b.sent();
+                        return [3 /*break*/, 6];
+                    case 5:
+                        console.log('Field type not recognized', element.class);
+                        _b.label = 6;
+                    case 6: return [2 /*return*/];
                 }
             });
         }); };
-        this.elementCreator = elementCreator;
+        this.selectElementCreationStrategy = selectElementCreationStrategy;
+        this.inputCreationStrategy = inputCreationStrategy;
+        this.fieldElementCreationStrategy = fieldElementCreationStrategy;
     }
-    FormElementCreator.prototype.createInput = function (form, element) {
-        var input = this.elementCreator.createElement('input');
-        this.setInputAttributes(input, element);
-        form.appendChild(input);
-    };
-    FormElementCreator.prototype.createLabel = function (form, element) {
-        var label = this.elementCreator.createElement('label');
-        label.textContent = element.for;
-        this.createInput(form, element);
-        form.appendChild(label);
-    };
-    FormElementCreator.prototype.createInputFields = function (form, element) {
-        var paragraph = this.elementCreator.createElement('div');
-        paragraph.textContent = element.name;
-        form.appendChild(paragraph);
-        this.createInput(form, element);
-    };
-    FormElementCreator.prototype.setInputAttributes = function (input, element) {
-        input.type = element.type;
-        input.name = element.name;
-        element.class === 'buttons' ? (input.value = element.value) : (input.placeholder = element.placeholder);
-    };
-    FormElementCreator.prototype.createButton = function (text, clickHandler) {
-        var button = this.elementCreator.createElement('button');
-        button.textContent = text;
-        button.addEventListener('click', clickHandler);
-        return button;
-    };
-    FormElementCreator.prototype.countryApi = function () {
-        return __awaiter(this, void 0, void 0, function () {
-            var apiUrl, data, response, countryTelMap;
-            return __generator(this, function (_a) {
-                switch (_a.label) {
-                    case 0:
-                        apiUrl = "http://apilayer.net/api/countries?access_key=c90144e214d92738b0be5d6e0652e1e4&number=14158586273";
-                        return [4 /*yield*/, fetch(apiUrl)];
-                    case 1:
-                        data = _a.sent();
-                        return [4 /*yield*/, data.json()];
-                    case 2:
-                        response = _a.sent();
-                        countryTelMap = new Map();
-                        Object.keys(response).forEach(function (countryCode) {
-                            var countryData = response[countryCode];
-                            countryTelMap.set(countryData.country_name, countryData.dialling_code);
-                        });
-                        return [2 /*return*/, countryTelMap];
-                }
-            });
-        });
-    };
-    FormElementCreator.prototype.createFormElement = function (form, element) {
-        switch (element.class) {
-            case 'selects':
-                this.createLabel(form, element);
-                break;
-            case 'buttons':
-                this.createInput(form, element);
-                break;
-            case 'fields':
-                this.createInputFields(form, element);
-                break;
-            default:
-                console.log('field type not recognized', element.class);
-        }
-    };
-    return FormElementCreator;
+    return FormElementCreation;
 }());
-exports.FormElementCreator = FormElementCreator;
+exports.FormElementCreation = FormElementCreation;

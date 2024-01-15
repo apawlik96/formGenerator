@@ -37,17 +37,21 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.FormGeneratorMultiStep = void 0;
-var form_element_creator_1 = require("./form-element-creator");
 var element_creator_1 = require("./element-creator");
-var config_1 = require("./config");
+var button_creation_1 = require("./button-creation");
+var form_element_creator_1 = require("./form-element-creator");
+var select_element_creation_strategy_1 = require("./select-element-creation-strategy");
+var input_creation_strategy_1 = require("./input-creation-strategy");
+var field_element_creation_strategy_1 = require("./field-element-creation-strategy");
 var form_styles_1 = require("./form-styles");
+var config_1 = require("./config");
 var config_2 = require("./config");
 var validator_1 = require("./validator");
 var FormGeneratorMultiStep = /** @class */ (function () {
     function FormGeneratorMultiStep(config) {
         var _this = this;
         this.createPage = function (title, fields) { return __awaiter(_this, void 0, void 0, function () {
-            var form, pageTitle, formElementCreator, _loop_1, this_1, _i, fields_1, fieldName, prevButton, nextButton;
+            var form, pageTitle, _loop_1, this_1, _i, fields_1, fieldName, prevButton, nextButton;
             var _this = this;
             return __generator(this, function (_a) {
                 switch (_a.label) {
@@ -57,23 +61,16 @@ var FormGeneratorMultiStep = /** @class */ (function () {
                         pageTitle = document.createElement('h2');
                         pageTitle.textContent = title;
                         form.appendChild(pageTitle);
-                        formElementCreator = new form_element_creator_1.FormElementCreator(new element_creator_1.ElementCreator());
                         _loop_1 = function (fieldName) {
                             var element;
                             return __generator(this, function (_b) {
                                 switch (_b.label) {
                                     case 0:
                                         element = this_1.config.fields.find(function (field) { return field.name === fieldName; });
-                                        if (!element) return [3 /*break*/, 3];
-                                        if (!(element.name === 'Phone')) return [3 /*break*/, 2];
-                                        return [4 /*yield*/, formElementCreator.createPhoneInput(form, element)];
+                                        return [4 /*yield*/, this_1.creationStrategy.create(form, element)];
                                     case 1:
                                         _b.sent();
-                                        return [3 /*break*/, 3];
-                                    case 2:
-                                        formElementCreator.createFormElement(form, element);
-                                        _b.label = 3;
-                                    case 3: return [2 /*return*/];
+                                        return [2 /*return*/];
                                 }
                             });
                         };
@@ -91,9 +88,9 @@ var FormGeneratorMultiStep = /** @class */ (function () {
                         _i++;
                         return [3 /*break*/, 1];
                     case 4:
-                        prevButton = formElementCreator.createButton('Previous', function () { return _this.showPreviousPage(); });
+                        prevButton = this.buttonCreation.create('Previous', function () { return _this.showPreviousPage(); });
                         form.appendChild(prevButton);
-                        nextButton = formElementCreator.createButton('Next', function () { return _this.showNextPage(); });
+                        nextButton = this.buttonCreation.create('Next', function () { return _this.showNextPage(); });
                         form.appendChild(nextButton);
                         return [2 /*return*/, form];
                 }
@@ -128,7 +125,9 @@ var FormGeneratorMultiStep = /** @class */ (function () {
         }); };
         this.config = config;
         this.currentPageIndex = 0;
-        this.formElementCreator = new form_element_creator_1.FormElementCreator(new element_creator_1.ElementCreator());
+        this.elementCreator = new element_creator_1.ElementCreator();
+        this.buttonCreation = new button_creation_1.ButtonCreation(this.elementCreator);
+        this.creationStrategy = new form_element_creator_1.FormElementCreation(new select_element_creation_strategy_1.SelectElementCreationStrategy(this.elementCreator, new input_creation_strategy_1.InputCreationStrategy(this.elementCreator)), new input_creation_strategy_1.InputCreationStrategy(this.elementCreator), new field_element_creation_strategy_1.FieldElementCreationStrategy(this.elementCreator));
         new form_styles_1.formStyles();
     }
     FormGeneratorMultiStep.prototype.createStepIndicators = function (page, step) {

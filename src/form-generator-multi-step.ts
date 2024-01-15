@@ -1,19 +1,32 @@
-import { FormElementCreator } from "./form-element-creator";
 import { ElementCreator } from "./element-creator";
-import { formPages } from "./config";
+import { FormElementCreationStrategy } from "./form-element-creator";
+import { ButtonCreation } from "./button-creation";
+import { FormElementCreation } from "./form-element-creator";
+import { SelectElementCreationStrategy } from "./select-element-creation-strategy";
+import { InputCreationStrategy } from "./input-creation-strategy";
+import { FieldElementCreationStrategy } from "./field-element-creation-strategy";
 import { formStyles } from "./form-styles";
+import { formPages } from "./config";
 import { formConfig } from "./config";
 import { FormValidator } from "./validator";
 
 export class FormGeneratorMultiStep {
     config: any;
     currentPageIndex: number;
-    formElementCreator: FormElementCreator;
+    private elementCreator: ElementCreator;
+    private creationStrategy: FormElementCreationStrategy;
+    private buttonCreation: ButtonCreation;
 
     constructor(config: any) {
         this.config = config;
         this.currentPageIndex = 0;
-        this.formElementCreator = new FormElementCreator(new ElementCreator());
+        this.elementCreator = new ElementCreator();
+        this.buttonCreation = new ButtonCreation(this.elementCreator);
+        this.creationStrategy = new FormElementCreation(
+            new SelectElementCreationStrategy(this.elementCreator, new InputCreationStrategy(this.elementCreator)),
+            new InputCreationStrategy(this.elementCreator),
+            new FieldElementCreationStrategy(this.elementCreator)
+        );
         new formStyles();
     }
 
@@ -40,23 +53,15 @@ export class FormGeneratorMultiStep {
         pageTitle.textContent = title;
         form.appendChild(pageTitle);
 
-        const formElementCreator = new FormElementCreator(new ElementCreator());
-
         for (const fieldName of fields) {
             const element = this.config.fields.find((field: any) => field.name === fieldName);
-            if (element) {
-                if (element.name === 'Phone') {
-                    await formElementCreator.createPhoneInput(form, element);
-                } else {
-                    formElementCreator.createFormElement(form, element);
-                }
-            }
+            await this.creationStrategy.create(form, element);
         }
 
-        const prevButton = formElementCreator.createButton('Previous', () => this.showPreviousPage());
+        const prevButton = this.buttonCreation.create('Previous', () => this.showPreviousPage());
         form.appendChild(prevButton);
 
-        const nextButton = formElementCreator.createButton('Next', () => this.showNextPage());
+        const nextButton = this.buttonCreation.create('Next', () => this.showNextPage());
         form.appendChild(nextButton);
     
         return form;
