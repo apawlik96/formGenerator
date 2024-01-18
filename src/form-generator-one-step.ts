@@ -1,6 +1,6 @@
 import { formConfig } from "./config";
 import { ElementCreator } from "./element-creator";
-import { FormElementCreationStrategy } from "./form-element-creator";
+import { FormElementCreationStrategy } from "./form-element-creation-strategy-interface";
 import { FormElementCreationContext } from "./form-element-creation-context";
 import { FormElementCreation } from "./form-element-creator";
 import { SelectElementCreationStrategy } from "./select-element-creation-strategy";
@@ -45,9 +45,11 @@ export class FormGeneratorOneStep {
         new formStyles();
     }
 
-    async generateForm(): Promise<HTMLFormElement> {
+    async generateForm(): Promise<HTMLFormElement | undefined> {
         const form = await this.formGenerator.createFormElement();
-        document.body.appendChild(form);
+        if (typeof document !== 'undefined' && document.body) {
+            document.body.appendChild(form);
+        }
         return form;
     }
 }
@@ -57,8 +59,10 @@ const formGeneratorOneStep = new FormGeneratorOneStep(formGenerator);
 const formValidator = new FormValidator();
 
 formGeneratorOneStep.generateForm().then(form => {
-    form.addEventListener('submit', function (event: Event) {
-        event.preventDefault();
-        formValidator.validation();
-    });
+    if (form) {
+        form.addEventListener('submit', function (event: Event) {
+            event.preventDefault();
+            formValidator.validation();
+        });
+    }
 });

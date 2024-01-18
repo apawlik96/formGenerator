@@ -1,4 +1,4 @@
-import { FormElementCreationStrategy } from "./form-element-creator";
+import { FormElementCreationStrategy } from "./form-element-creation-strategy-interface";
 
 export class FormElementCreationContext implements FormElementCreationStrategy {
     private creationStrategy: FormElementCreationStrategy;

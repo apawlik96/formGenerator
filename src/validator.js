@@ -1,9 +1,10 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.FormValidator = void 0;
 var FormValidator = /** @class */ (function () {
     function FormValidator() {
-        this.form = document.querySelector('form');
+        if (typeof document !== 'undefined') {
+            this.form = document.querySelector('form');
+        }
     }
     FormValidator.prototype.validation = function () {
         var form = document.querySelector('form');

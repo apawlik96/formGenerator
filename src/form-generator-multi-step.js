@@ -1,10 +1,9 @@
 "use strict";
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
-    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
         function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
         function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
-        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
+        function step(result) { result.done ? resolve(result.value) : new P(function (resolve) { resolve(result.value); }).then(fulfilled, rejected); }
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
@@ -14,7 +13,7 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
     function verb(n) { return function (v) { return step([n, v]); }; }
     function step(op) {
         if (f) throw new TypeError("Generator is already executing.");
-        while (g && (g = 0, op[0] && (_ = 0)), _) try {
+        while (_) try {
             if (f = 1, y && (t = op[0] & 2 ? y["return"] : op[0] ? y["throw"] || ((t = y["return"]) && t.call(y), 0) : y.next) && !(t = t.call(y, op[1])).done) return t;
             if (y = 0, t) op = [op[0] & 2, t.value];
             switch (op[0]) {
@@ -36,7 +35,6 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
     }
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.FormGeneratorMultiStep = void 0;
 var element_creator_1 = require("./element-creator");
 var button_creation_1 = require("./button-creation");
 var form_element_creator_1 = require("./form-element-creator");
@@ -63,13 +61,13 @@ var FormGeneratorMultiStep = /** @class */ (function () {
                         form.appendChild(pageTitle);
                         _loop_1 = function (fieldName) {
                             var element;
-                            return __generator(this, function (_b) {
-                                switch (_b.label) {
+                            return __generator(this, function (_a) {
+                                switch (_a.label) {
                                     case 0:
                                         element = this_1.config.fields.find(function (field) { return field.name === fieldName; });
                                         return [4 /*yield*/, this_1.creationStrategy.create(form, element)];
                                     case 1:
-                                        _b.sent();
+                                        _a.sent();
                                         return [2 /*return*/];
                                 }
                             });
@@ -101,6 +99,7 @@ var FormGeneratorMultiStep = /** @class */ (function () {
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
+                        if (!(typeof document !== 'undefined')) return [3 /*break*/, 5];
                         container = document.createElement('div');
                         index = 0;
                         _a.label = 1;
@@ -120,6 +119,7 @@ var FormGeneratorMultiStep = /** @class */ (function () {
                     case 4:
                         document.body.appendChild(container);
                         return [2 /*return*/, container];
+                    case 5: return [2 /*return*/];
                 }
             });
         }); };
@@ -163,9 +163,11 @@ exports.FormGeneratorMultiStep = FormGeneratorMultiStep;
 var formGenerator = new FormGeneratorMultiStep(config_2.formConfig);
 var formValidator = new validator_1.FormValidator();
 formGenerator.generateForm().then(function (form) {
-    document.body.appendChild(form);
-    form.addEventListener('submit', function (event) {
-        event.preventDefault();
-        formValidator.validation();
-    });
+    if (form) {
+        document.body.appendChild(form);
+        form.addEventListener('submit', function (event) {
+            event.preventDefault();
+            formValidator.validation();
+        });
+    }
 });

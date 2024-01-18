@@ -1,10 +1,7 @@
 import { SelectElementCreationStrategy } from "./select-element-creation-strategy";
 import { InputCreationStrategy } from "./input-creation-strategy";
 import { FieldElementCreationStrategy } from "./field-element-creation-strategy";
-
-export interface FormElementCreationStrategy {
-    create(form: HTMLFormElement, element: any): void;
-}
+import { FormElementCreationStrategy } from "./form-element-creation-strategy-interface";
 
 export class FormElementCreation implements FormElementCreationStrategy {
     private selectElementCreationStrategy: SelectElementCreationStrategy;
@@ -29,7 +26,7 @@ export class FormElementCreation implements FormElementCreationStrategy {
                 await this.fieldElementCreationStrategy.create(form, element);
                 break;
             default:
-                console.log('Field type not recognized', element.class);
+                console.error('Field type not recognized', element.class);
         }
     }
 }

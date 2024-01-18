@@ -87,9 +87,11 @@ export class formStyles  {
         }
         `;
 
-        const styleElement = document.createElement('style');
-        styleElement.appendChild(document.createTextNode(styles));
+        if (typeof document !== 'undefined') {
+            var styleElement = document.createElement('style');
+            styleElement.appendChild(document.createTextNode(styles));
 
-        document.body.appendChild(styleElement);
+            document.body.appendChild(styleElement);
+        }
     }
 }

@@ -1,6 +1,5 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.SelectElementCreationStrategy = void 0;
 var SelectElementCreationStrategy = /** @class */ (function () {
     function SelectElementCreationStrategy(elementCreator, inputCreationStrategy) {
         this.elementCreator = elementCreator;
@@ -8,9 +7,11 @@ var SelectElementCreationStrategy = /** @class */ (function () {
     }
     SelectElementCreationStrategy.prototype.create = function (form, element) {
         var label = this.elementCreator.createElement('label');
-        label.textContent = element.for;
-        this.inputCreationStrategy.create(form, element);
-        form.appendChild(label);
+        if (label) {
+            label.textContent = element.for;
+            this.inputCreationStrategy.create(form, element);
+            form.appendChild(label);
+        }
     };
     return SelectElementCreationStrategy;
 }());

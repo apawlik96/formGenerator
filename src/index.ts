@@ -1,6 +1,7 @@
 export {formConfig, formPages} from './config';
 export {ElementCreator} from './element-creator';
-export {FormElementCreationStrategy,FormElementCreation} from './form-element-creator';
+export {FormElementCreationStrategy} from "./form-element-creation-strategy-interface";
+export {FormElementCreation} from './form-element-creator';
 export {FormGenerator, FormGeneratorOneStep} from './form-generator-one-step';
 export {formStyles} from './form-styles';
 export {FormValidator} from './validator';

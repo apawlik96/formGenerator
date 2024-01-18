@@ -1,10 +1,9 @@
 "use strict";
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
-    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
         function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
         function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
-        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
+        function step(result) { result.done ? resolve(result.value) : new P(function (resolve) { resolve(result.value); }).then(fulfilled, rejected); }
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
@@ -14,7 +13,7 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
     function verb(n) { return function (v) { return step([n, v]); }; }
     function step(op) {
         if (f) throw new TypeError("Generator is already executing.");
-        while (g && (g = 0, op[0] && (_ = 0)), _) try {
+        while (_) try {
             if (f = 1, y && (t = op[0] & 2 ? y["return"] : op[0] ? y["throw"] || ((t = y["return"]) && t.call(y), 0) : y.next) && !(t = t.call(y, op[1])).done) return t;
             if (y = 0, t) op = [op[0] & 2, t.value];
             switch (op[0]) {
@@ -35,17 +34,7 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
         if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
     }
 };
-var __spreadArray = (this && this.__spreadArray) || function (to, from, pack) {
-    if (pack || arguments.length === 2) for (var i = 0, l = from.length, ar; i < l; i++) {
-        if (ar || !(i in from)) {
-            if (!ar) ar = Array.prototype.slice.call(from, 0, i);
-            ar[i] = from[i];
-        }
-    }
-    return to.concat(ar || Array.prototype.slice.call(from));
-};
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.FormGeneratorOneStep = exports.FormGenerator = void 0;
 var config_1 = require("./config");
 var element_creator_1 = require("./element-creator");
 var form_element_creation_context_1 = require("./form-element-creation-context");
@@ -64,7 +53,7 @@ var FormGenerator = /** @class */ (function () {
                 switch (_a.label) {
                     case 0:
                         form = this.elementCreator.createElement('form');
-                        elements = __spreadArray(__spreadArray(__spreadArray([], this.config.selects, true), this.config.fields, true), this.config.buttons, true);
+                        elements = this.config.selects.concat(this.config.fields, this.config.buttons);
                         _i = 0, elements_1 = elements;
                         _a.label = 1;
                     case 1:
@@ -103,7 +92,9 @@ var FormGeneratorOneStep = /** @class */ (function () {
                     case 0: return [4 /*yield*/, this.formGenerator.createFormElement()];
                     case 1:
                         form = _a.sent();
-                        document.body.appendChild(form);
+                        if (typeof document !== 'undefined' && document.body) {
+                            document.body.appendChild(form);
+                        }
                         return [2 /*return*/, form];
                 }
             });
@@ -116,8 +107,10 @@ var formGenerator = new FormGenerator(config_1.formConfig);
 var formGeneratorOneStep = new FormGeneratorOneStep(formGenerator);
 var formValidator = new validator_1.FormValidator();
 formGeneratorOneStep.generateForm().then(function (form) {
-    form.addEventListener('submit', function (event) {
-        event.preventDefault();
-        formValidator.validation();
-    });
+    if (form) {
+        form.addEventListener('submit', function (event) {
+            event.preventDefault();
+            formValidator.validation();
+        });
+    }
 });

@@ -1,9 +1,11 @@
 export class FormValidator {
 
-    private form: HTMLFormElement;
+    private form: HTMLFormElement | undefined;
 
     constructor() {
-        this.form = document.querySelector('form') as HTMLFormElement;
+        if (typeof document !== 'undefined') {
+            this.form = document.querySelector('form') as HTMLFormElement;
+        }
     }
 
     validation(): void {

@@ -1,5 +1,5 @@
 import { ElementCreator } from "./element-creator";
-import { FormElementCreationStrategy } from "./form-element-creator";
+import { FormElementCreationStrategy } from "./form-element-creation-strategy-interface";
 import { ButtonCreation } from "./button-creation";
 import { FormElementCreation } from "./form-element-creator";
 import { SelectElementCreationStrategy } from "./select-element-creation-strategy";
@@ -83,30 +83,35 @@ export class FormGeneratorMultiStep {
         }
     }
 
-    generateForm = async (): Promise<HTMLDivElement> => {
-        const container = document.createElement('div');
-
-        for (let index = 0; index < formPages.length; index++) {
-            const page = formPages[index];
-            const formPage = await this.createPage(page.title, page.fields);
-            formPage.style.display = index === 0 ? 'block' : 'none';
-            container.appendChild(formPage);
-            (formPages[index] as any).element = formPage;
-        }
+    generateForm = async (): Promise<HTMLDivElement | undefined> => {
+        let container;
+        if (typeof document !== 'undefined') {
+            container = document.createElement('div');
+            for (let index = 0; index < formPages.length; index++) {
+                const page = formPages[index];
+                const formPage = await this.createPage(page.title, page.fields);
+                formPage.style.display = index === 0 ? 'block' : 'none';
+                container.appendChild(formPage);
+                (formPages[index] as any).element = formPage;
+            }
 
         document.body.appendChild(container);
 
         return container;
+        }
     }
+
 }
 
 const formGenerator = new FormGeneratorMultiStep(formConfig);
 const formValidator = new FormValidator();
 
 formGenerator.generateForm().then(form => {
-    document.body.appendChild(form);
-    form.addEventListener('submit', function (event) {
-        event.preventDefault();
-        formValidator.validation();
-    });
+    if (form) {
+        document.body.appendChild(form);
+        form.addEventListener('submit', function (event) {
+            event.preventDefault();
+            formValidator.validation();
+        });
+    }
 });

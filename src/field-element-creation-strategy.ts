@@ -1,5 +1,6 @@
 import { ElementCreator } from "./element-creator";
-import { FormElementCreationStrategy } from "./form-element-creator";
+import { FormElementCreationStrategy } from "./form-element-creation-strategy-interface";
+require('dotenv').config();
 
 export class FieldElementCreationStrategy implements FormElementCreationStrategy {
     private elementCreator: ElementCreator;
@@ -15,35 +16,43 @@ export class FieldElementCreationStrategy implements FormElementCreationStrategy
             this.createInputFields(form, element);
         }
     }
-
+    
     private createPhoneInput = async (form: HTMLFormElement, element: any) => {
         const paragraph = this.elementCreator.createElement('div');
-        paragraph.textContent = element.name;
-        form.appendChild(paragraph);
-        const select = this.elementCreator.createElement('select');
-        const input = this.elementCreator.createElement('input') as HTMLInputElement;
-        this.setInputAttributes(input, element);
-
-        const countryTelMap = await this.fetchCountryPhoneCodes();
-
-        countryTelMap.forEach((diallingCode: string, countryName: string) => {
-            const option = this.elementCreator.createElement('option') as HTMLOptionElement;
-            option.text = `${countryName}`;
-            option.value = `${diallingCode}`;
-            select.appendChild(option);
-        });
-
-        form.appendChild(select);
-        form.appendChild(input);
+        
+        if (paragraph) {
+            paragraph.textContent = element.name;
+            form.appendChild(paragraph);
+    
+            const select = this.elementCreator.createElement('select');
+            if (select) {
+                const input = this.elementCreator.createElement('input') as HTMLInputElement;
+                this.setInputAttributes(input, element);
+    
+                const countryTelMap = await this.fetchCountryPhoneCodes();
+    
+                countryTelMap.forEach((diallingCode: string, countryName: string) => {
+                    const option = this.elementCreator.createElement('option') as HTMLOptionElement;
+                    option.text = `${countryName}`;
+                    option.value = `${diallingCode}`;
+                    select.appendChild(option);
+                });
+    
+                form.appendChild(select);
+                form.appendChild(input);
+            }
+        }
     };
 
     private createInputFields(form: HTMLFormElement, element: any): void {
         const paragraph = this.elementCreator.createElement('div') as HTMLDivElement;
-        paragraph.textContent = element.name;
-        form.appendChild(paragraph);
-        const input = this.elementCreator.createElement('input') as HTMLInputElement;
-        this.setInputAttributes(input, element);
-        form.appendChild(input);
+        if (paragraph) {
+            paragraph.textContent = element.name;
+            form.appendChild(paragraph);
+            const input = this.elementCreator.createElement('input') as HTMLInputElement;
+            this.setInputAttributes(input, element);
+            form.appendChild(input);
+        }
     }
 
     private setInputAttributes(input: HTMLInputElement, element: any): void {
@@ -53,7 +62,8 @@ export class FieldElementCreationStrategy implements FormElementCreationStrategy
     }
 
     private async fetchCountryPhoneCodes(): Promise<Map<string, string>> {
-        const apiUrl = `http://apilayer.net/api/countries?access_key=c90144e214d92738b0be5d6e0652e1e4&number=14158586273`;
+        const apiKey = process.env.API_KEY;
+        const apiUrl = `http://apilayer.net/api/countries?apiKey=${apiKey}`;
         const data = await fetch(apiUrl);
         const response = await data.json();
 
