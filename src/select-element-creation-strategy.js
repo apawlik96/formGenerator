@@ -1,5 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.SelectElementCreationStrategy = void 0;
 var SelectElementCreationStrategy = /** @class */ (function () {
     function SelectElementCreationStrategy(elementCreator, inputCreationStrategy) {
         this.elementCreator = elementCreator;

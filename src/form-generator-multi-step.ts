@@ -1,10 +1,6 @@
 import { ElementCreator } from "./element-creator";
-import { FormElementCreationStrategy } from "./form-element-creation-strategy-interface";
 import { ButtonCreation } from "./button-creation";
 import { FormElementCreation } from "./form-element-creator";
-import { SelectElementCreationStrategy } from "./select-element-creation-strategy";
-import { InputCreationStrategy } from "./input-creation-strategy";
-import { FieldElementCreationStrategy } from "./field-element-creation-strategy";
 import { formStyles } from "./form-styles";
 import { formPages } from "./config";
 import { formConfig } from "./config";
@@ -14,7 +10,7 @@ export class FormGeneratorMultiStep {
     config: any;
     currentPageIndex: number;
     private elementCreator: ElementCreator;
-    private creationStrategy: FormElementCreationStrategy;
+    private formElementCreation: FormElementCreation;
     private buttonCreation: ButtonCreation;
 
     constructor(config: any) {
@@ -22,11 +18,7 @@ export class FormGeneratorMultiStep {
         this.currentPageIndex = 0;
         this.elementCreator = new ElementCreator();
         this.buttonCreation = new ButtonCreation(this.elementCreator);
-        this.creationStrategy = new FormElementCreation(
-            new SelectElementCreationStrategy(this.elementCreator, new InputCreationStrategy(this.elementCreator)),
-            new InputCreationStrategy(this.elementCreator),
-            new FieldElementCreationStrategy(this.elementCreator)
-        );
+        this.formElementCreation = new FormElementCreation();
         new formStyles();
     }
 
@@ -34,14 +26,12 @@ export class FormGeneratorMultiStep {
         const stepIndicatorContainer = document.createElement('div');
         stepIndicatorContainer.className = 'step-indicator-container';
         page.appendChild(stepIndicatorContainer);
-    
         for (let i = 1; i <= formPages.length; i++) {
             const stepIndicator = document.createElement('div');
             stepIndicator.className = 'step-indicator';
             stepIndicator.textContent = i.toString();
             stepIndicatorContainer.appendChild(stepIndicator);
         }
-    
         const stepIndicators = stepIndicatorContainer.querySelectorAll('.step-indicator');
         stepIndicators[step - 1].classList.add('current-step');
     }
@@ -52,18 +42,14 @@ export class FormGeneratorMultiStep {
         const pageTitle = document.createElement('h2');
         pageTitle.textContent = title;
         form.appendChild(pageTitle);
-
         for (const fieldName of fields) {
             const element = this.config.fields.find((field: any) => field.name === fieldName);
-            await this.creationStrategy.create(form, element);
+            await this.formElementCreation.create(form, element);
         }
-
         const prevButton = this.buttonCreation.create('Previous', () => this.showPreviousPage());
         form.appendChild(prevButton);
-
         const nextButton = this.buttonCreation.create('Next', () => this.showNextPage());
         form.appendChild(nextButton);
-    
         return form;
     }
 
@@ -94,13 +80,10 @@ export class FormGeneratorMultiStep {
                 container.appendChild(formPage);
                 (formPages[index] as any).element = formPage;
             }
-
         document.body.appendChild(container);
-
         return container;
         }
     }
-
 }
 
 const formGenerator = new FormGeneratorMultiStep(formConfig);

@@ -19,30 +19,29 @@ export class FieldElementCreationStrategy implements FormElementCreationStrategy
     
     private createPhoneInput = async (form: HTMLFormElement, element: any) => {
         const paragraph = this.elementCreator.createElement('div');
-        
         if (paragraph) {
             paragraph.textContent = element.name;
             form.appendChild(paragraph);
-    
-            const select = this.elementCreator.createElement('select');
+            const select = this.elementCreator.createElement('select') as HTMLSelectElement;
             if (select) {
                 const input = this.elementCreator.createElement('input') as HTMLInputElement;
                 this.setInputAttributes(input, element);
-    
-                const countryTelMap = await this.fetchCountryPhoneCodes();
-    
-                countryTelMap.forEach((diallingCode: string, countryName: string) => {
-                    const option = this.elementCreator.createElement('option') as HTMLOptionElement;
-                    option.text = `${countryName}`;
-                    option.value = `${diallingCode}`;
-                    select.appendChild(option);
-                });
-    
+                await this.createCountryOptions(select);
                 form.appendChild(select);
                 form.appendChild(input);
             }
         }
     };
+    
+    private async createCountryOptions(select: HTMLSelectElement) {
+        const countryTelMap = await this.fetchCountryPhoneCodes();
+        countryTelMap.forEach((diallingCode: string, countryName: string) => {
+            const option = this.elementCreator.createElement('option') as HTMLOptionElement;
+            option.text = `${countryName}`;
+            option.value = `${diallingCode}`;
+            select.appendChild(option);
+        });
+    }
 
     private createInputFields(form: HTMLFormElement, element: any): void {
         const paragraph = this.elementCreator.createElement('div') as HTMLDivElement;
@@ -62,18 +61,14 @@ export class FieldElementCreationStrategy implements FormElementCreationStrategy
     }
 
     private async fetchCountryPhoneCodes(): Promise<Map<string, string>> {
-        const apiKey = process.env.API_KEY;
-        const apiUrl = `http://apilayer.net/api/countries?apiKey=${apiKey}`;
+        const apiUrl = process.env.API_KEY as string;
         const data = await fetch(apiUrl);
         const response = await data.json();
-
         let countryTelMap = new Map<string, string>();
-
         Object.keys(response).forEach((countryCode) => {
             const countryData = response[countryCode];
             countryTelMap.set(countryData.country_name, countryData.dialling_code);
         });
-
         return countryTelMap;
     }
 }

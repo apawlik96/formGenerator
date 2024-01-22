@@ -1,5 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.formStyles = void 0;
 var formStyles = /** @class */ (function () {
     function formStyles() {
         this.addStyles();

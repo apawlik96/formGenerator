@@ -1,9 +1,10 @@
 "use strict";
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
         function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
         function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
-        function step(result) { result.done ? resolve(result.value) : new P(function (resolve) { resolve(result.value); }).then(fulfilled, rejected); }
+        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
@@ -13,7 +14,7 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
     function verb(n) { return function (v) { return step([n, v]); }; }
     function step(op) {
         if (f) throw new TypeError("Generator is already executing.");
-        while (_) try {
+        while (g && (g = 0, op[0] && (_ = 0)), _) try {
             if (f = 1, y && (t = op[0] & 2 ? y["return"] : op[0] ? y["throw"] || ((t = y["return"]) && t.call(y), 0) : y.next) && !(t = t.call(y, op[1])).done) return t;
             if (y = 0, t) op = [op[0] & 2, t.value];
             switch (op[0]) {
@@ -35,6 +36,7 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
     }
 };
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.FieldElementCreationStrategy = void 0;
 require('dotenv').config();
 var FieldElementCreationStrategy = /** @class */ (function () {
     function FieldElementCreationStrategy(elementCreator) {
@@ -56,8 +58,7 @@ var FieldElementCreationStrategy = /** @class */ (function () {
             });
         }); };
         this.createPhoneInput = function (form, element) { return __awaiter(_this, void 0, void 0, function () {
-            var paragraph, select_1, input, countryTelMap;
-            var _this = this;
+            var paragraph, select, input;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
@@ -65,20 +66,14 @@ var FieldElementCreationStrategy = /** @class */ (function () {
                         if (!paragraph) return [3 /*break*/, 2];
                         paragraph.textContent = element.name;
                         form.appendChild(paragraph);
-                        select_1 = this.elementCreator.createElement('select');
-                        if (!select_1) return [3 /*break*/, 2];
+                        select = this.elementCreator.createElement('select');
+                        if (!select) return [3 /*break*/, 2];
                         input = this.elementCreator.createElement('input');
                         this.setInputAttributes(input, element);
-                        return [4 /*yield*/, this.fetchCountryPhoneCodes()];
+                        return [4 /*yield*/, this.createCountryOptions(select)];
                     case 1:
-                        countryTelMap = _a.sent();
-                        countryTelMap.forEach(function (diallingCode, countryName) {
-                            var option = _this.elementCreator.createElement('option');
-                            option.text = "" + countryName;
-                            option.value = "" + diallingCode;
-                            select_1.appendChild(option);
-                        });
-                        form.appendChild(select_1);
+                        _a.sent();
+                        form.appendChild(select);
                         form.appendChild(input);
                         _a.label = 2;
                     case 2: return [2 /*return*/];
@@ -87,6 +82,26 @@ var FieldElementCreationStrategy = /** @class */ (function () {
         }); };
         this.elementCreator = elementCreator;
     }
+    FieldElementCreationStrategy.prototype.createCountryOptions = function (select) {
+        return __awaiter(this, void 0, void 0, function () {
+            var countryTelMap;
+            var _this = this;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0: return [4 /*yield*/, this.fetchCountryPhoneCodes()];
+                    case 1:
+                        countryTelMap = _a.sent();
+                        countryTelMap.forEach(function (diallingCode, countryName) {
+                            var option = _this.elementCreator.createElement('option');
+                            option.text = "".concat(countryName);
+                            option.value = "".concat(diallingCode);
+                            select.appendChild(option);
+                        });
+                        return [2 /*return*/];
+                }
+            });
+        });
+    };
     FieldElementCreationStrategy.prototype.createInputFields = function (form, element) {
         var paragraph = this.elementCreator.createElement('div');
         if (paragraph) {
@@ -104,12 +119,11 @@ var FieldElementCreationStrategy = /** @class */ (function () {
     };
     FieldElementCreationStrategy.prototype.fetchCountryPhoneCodes = function () {
         return __awaiter(this, void 0, void 0, function () {
-            var apiKey, apiUrl, data, response, countryTelMap;
+            var apiUrl, data, response, countryTelMap;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
-                        apiKey = process.env.API_KEY;
-                        apiUrl = "http://apilayer.net/api/countries?apiKey=" + apiKey;
+                        apiUrl = process.env.API_KEY;
                         return [4 /*yield*/, fetch(apiUrl)];
                     case 1:
                         data = _a.sent();

@@ -1,32 +1,38 @@
 import { SelectElementCreationStrategy } from "./select-element-creation-strategy";
 import { InputCreationStrategy } from "./input-creation-strategy";
 import { FieldElementCreationStrategy } from "./field-element-creation-strategy";
-import { FormElementCreationStrategy } from "./form-element-creation-strategy-interface";
+import { FormElementCreationContext } from "./form-element-creation-context";
+import { ElementCreator } from "./element-creator";
 
-export class FormElementCreation implements FormElementCreationStrategy {
-    private selectElementCreationStrategy: SelectElementCreationStrategy;
-    private inputCreationStrategy: InputCreationStrategy;
-    private fieldElementCreationStrategy: FieldElementCreationStrategy;
+export class FormElementCreation {
+    private elementCreator: ElementCreator;
 
-    constructor(selectElementCreationStrategy: SelectElementCreationStrategy, inputCreationStrategy: InputCreationStrategy, fieldElementCreationStrategy: FieldElementCreationStrategy) {
-        this.selectElementCreationStrategy = selectElementCreationStrategy;
-        this.inputCreationStrategy = inputCreationStrategy;
-        this.fieldElementCreationStrategy = fieldElementCreationStrategy;
+    constructor() {
+        this.elementCreator = new ElementCreator();
     }
 
-    create = async (form: HTMLFormElement, element: any): Promise<void> =>  {
+    create = async (form: HTMLFormElement, element: any): Promise<void> => {
+        let formElementCreationContext: FormElementCreationContext;
         switch (element.class) {
             case 'selects':
-                this.selectElementCreationStrategy.create(form, element);
+                formElementCreationContext = new FormElementCreationContext(
+                    new SelectElementCreationStrategy(this.elementCreator, new InputCreationStrategy(this.elementCreator))
+                );
                 break;
             case 'buttons':
-                this.inputCreationStrategy.create(form, element);
+                formElementCreationContext = new FormElementCreationContext(
+                    new InputCreationStrategy(this.elementCreator)
+                );
                 break;
             case 'fields':
-                await this.fieldElementCreationStrategy.create(form, element);
+                formElementCreationContext = new FormElementCreationContext(
+                    new FieldElementCreationStrategy(this.elementCreator)
+                );
                 break;
             default:
                 console.error('Field type not recognized', element.class);
+                return;
         }
-    }
+        await formElementCreationContext.create(form, element);
+    };
 }

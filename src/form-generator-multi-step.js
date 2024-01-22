@@ -1,9 +1,10 @@
 "use strict";
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
         function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
         function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
-        function step(result) { result.done ? resolve(result.value) : new P(function (resolve) { resolve(result.value); }).then(fulfilled, rejected); }
+        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
@@ -13,7 +14,7 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
     function verb(n) { return function (v) { return step([n, v]); }; }
     function step(op) {
         if (f) throw new TypeError("Generator is already executing.");
-        while (_) try {
+        while (g && (g = 0, op[0] && (_ = 0)), _) try {
             if (f = 1, y && (t = op[0] & 2 ? y["return"] : op[0] ? y["throw"] || ((t = y["return"]) && t.call(y), 0) : y.next) && !(t = t.call(y, op[1])).done) return t;
             if (y = 0, t) op = [op[0] & 2, t.value];
             switch (op[0]) {
@@ -35,12 +36,10 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
     }
 };
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.FormGeneratorMultiStep = void 0;
 var element_creator_1 = require("./element-creator");
 var button_creation_1 = require("./button-creation");
 var form_element_creator_1 = require("./form-element-creator");
-var select_element_creation_strategy_1 = require("./select-element-creation-strategy");
-var input_creation_strategy_1 = require("./input-creation-strategy");
-var field_element_creation_strategy_1 = require("./field-element-creation-strategy");
 var form_styles_1 = require("./form-styles");
 var config_1 = require("./config");
 var config_2 = require("./config");
@@ -61,13 +60,13 @@ var FormGeneratorMultiStep = /** @class */ (function () {
                         form.appendChild(pageTitle);
                         _loop_1 = function (fieldName) {
                             var element;
-                            return __generator(this, function (_a) {
-                                switch (_a.label) {
+                            return __generator(this, function (_b) {
+                                switch (_b.label) {
                                     case 0:
                                         element = this_1.config.fields.find(function (field) { return field.name === fieldName; });
-                                        return [4 /*yield*/, this_1.creationStrategy.create(form, element)];
+                                        return [4 /*yield*/, this_1.formElementCreation.create(form, element)];
                                     case 1:
-                                        _a.sent();
+                                        _b.sent();
                                         return [2 /*return*/];
                                 }
                             });
@@ -127,7 +126,7 @@ var FormGeneratorMultiStep = /** @class */ (function () {
         this.currentPageIndex = 0;
         this.elementCreator = new element_creator_1.ElementCreator();
         this.buttonCreation = new button_creation_1.ButtonCreation(this.elementCreator);
-        this.creationStrategy = new form_element_creator_1.FormElementCreation(new select_element_creation_strategy_1.SelectElementCreationStrategy(this.elementCreator, new input_creation_strategy_1.InputCreationStrategy(this.elementCreator)), new input_creation_strategy_1.InputCreationStrategy(this.elementCreator), new field_element_creation_strategy_1.FieldElementCreationStrategy(this.elementCreator));
+        this.formElementCreation = new form_element_creator_1.FormElementCreation();
         new form_styles_1.formStyles();
     }
     FormGeneratorMultiStep.prototype.createStepIndicators = function (page, step) {

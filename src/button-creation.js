@@ -1,5 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.ButtonCreation = void 0;
 var ButtonCreation = /** @class */ (function () {
     function ButtonCreation(elementCreator) {
         this.elementCreator = elementCreator;

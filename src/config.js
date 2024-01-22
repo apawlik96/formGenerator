@@ -1,5 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.formPages = exports.formConfig = void 0;
 exports.formConfig = {
     fields: [{
             class: 'fields',
