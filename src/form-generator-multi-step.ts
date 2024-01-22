@@ -1,29 +1,27 @@
-import { ElementCreator } from "./element-creator";
 import { ButtonCreation } from "./button-creation";
 import { FormElementCreation } from "./form-element-creator";
 import { formStyles } from "./form-styles";
 import { formPages } from "./config";
 import { formConfig } from "./config";
 import { FormValidator } from "./validator";
+import { divCreator,formCreator,titleCreator } from "./html-tag-name";
 
 export class FormGeneratorMultiStep {
     config: any;
     currentPageIndex: number;
-    private elementCreator: ElementCreator;
     private formElementCreation: FormElementCreation;
     private buttonCreation: ButtonCreation;
 
     constructor(config: any) {
         this.config = config;
         this.currentPageIndex = 0;
-        this.elementCreator = new ElementCreator();
-        this.buttonCreation = new ButtonCreation(this.elementCreator);
+        this.buttonCreation = new ButtonCreation();
         this.formElementCreation = new FormElementCreation();
         new formStyles();
     }
 
     createStepIndicators(page: HTMLFormElement, step: number): void {
-        const stepIndicatorContainer = document.createElement('div');
+        const stepIndicatorContainer = divCreator;
         stepIndicatorContainer.className = 'step-indicator-container';
         page.appendChild(stepIndicatorContainer);
         for (let i = 1; i <= formPages.length; i++) {
@@ -37,9 +35,9 @@ export class FormGeneratorMultiStep {
     }
 
     createPage = async (title: string, fields: string[]) => {
-        const form = document.createElement('form') as HTMLFormElement;
+        const form = formCreator;
         form.className = 'form-page';
-        const pageTitle = document.createElement('h2');
+        const pageTitle = titleCreator;
         pageTitle.textContent = title;
         form.appendChild(pageTitle);
         for (const fieldName of fields) {
@@ -72,7 +70,7 @@ export class FormGeneratorMultiStep {
     generateForm = async (): Promise<HTMLDivElement | undefined> => {
         let container;
         if (typeof document !== 'undefined') {
-            container = document.createElement('div');
+            container = divCreator;
             for (let index = 0; index < formPages.length; index++) {
                 const page = formPages[index];
                 const formPage = await this.createPage(page.title, page.fields);
@@ -82,6 +80,8 @@ export class FormGeneratorMultiStep {
             }
         document.body.appendChild(container);
         return container;
+        } else {
+            console.error('The document object not found.')
         }
     }
 }

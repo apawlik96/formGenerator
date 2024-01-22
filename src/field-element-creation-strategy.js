@@ -37,9 +37,10 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.FieldElementCreationStrategy = void 0;
+var html_tag_name_1 = require("./html-tag-name");
 require('dotenv').config();
 var FieldElementCreationStrategy = /** @class */ (function () {
-    function FieldElementCreationStrategy(elementCreator) {
+    function FieldElementCreationStrategy() {
         var _this = this;
         this.create = function (form, element) { return __awaiter(_this, void 0, void 0, function () {
             return __generator(this, function (_a) {
@@ -62,13 +63,13 @@ var FieldElementCreationStrategy = /** @class */ (function () {
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
-                        paragraph = this.elementCreator.createElement('div');
+                        paragraph = html_tag_name_1.divCreator;
                         if (!paragraph) return [3 /*break*/, 2];
                         paragraph.textContent = element.name;
                         form.appendChild(paragraph);
-                        select = this.elementCreator.createElement('select');
+                        select = html_tag_name_1.selectCreator;
                         if (!select) return [3 /*break*/, 2];
-                        input = this.elementCreator.createElement('input');
+                        input = html_tag_name_1.inputCreator;
                         this.setInputAttributes(input, element);
                         return [4 /*yield*/, this.createCountryOptions(select)];
                     case 1:
@@ -80,19 +81,17 @@ var FieldElementCreationStrategy = /** @class */ (function () {
                 }
             });
         }); };
-        this.elementCreator = elementCreator;
     }
     FieldElementCreationStrategy.prototype.createCountryOptions = function (select) {
         return __awaiter(this, void 0, void 0, function () {
             var countryTelMap;
-            var _this = this;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0: return [4 /*yield*/, this.fetchCountryPhoneCodes()];
                     case 1:
                         countryTelMap = _a.sent();
                         countryTelMap.forEach(function (diallingCode, countryName) {
-                            var option = _this.elementCreator.createElement('option');
+                            var option = html_tag_name_1.optionCreator;
                             option.text = "".concat(countryName);
                             option.value = "".concat(diallingCode);
                             select.appendChild(option);
@@ -103,11 +102,11 @@ var FieldElementCreationStrategy = /** @class */ (function () {
         });
     };
     FieldElementCreationStrategy.prototype.createInputFields = function (form, element) {
-        var paragraph = this.elementCreator.createElement('div');
+        var paragraph = html_tag_name_1.divCreator;
         if (paragraph) {
             paragraph.textContent = element.name;
             form.appendChild(paragraph);
-            var input = this.elementCreator.createElement('input');
+            var input = html_tag_name_1.inputCreator;
             this.setInputAttributes(input, element);
             form.appendChild(input);
         }

@@ -6,6 +6,9 @@ var FormValidator = /** @class */ (function () {
         if (typeof document !== 'undefined') {
             this.form = document.querySelector('form');
         }
+        else {
+            console.error('Form not found.');
+        }
     }
     FormValidator.prototype.validation = function () {
         var form = document.querySelector('form');

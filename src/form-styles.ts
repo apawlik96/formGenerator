@@ -92,6 +92,8 @@ export class formStyles  {
             styleElement.appendChild(document.createTextNode(styles));
 
             document.body.appendChild(styleElement);
+        } else {
+            console.error('Style element not found.')
         }
     }
 }

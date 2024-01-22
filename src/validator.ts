@@ -5,6 +5,8 @@ export class FormValidator {
     constructor() {
         if (typeof document !== 'undefined') {
             this.form = document.querySelector('form') as HTMLFormElement;
+        } else {
+            console.error('Form not found.');
         }
     }
 

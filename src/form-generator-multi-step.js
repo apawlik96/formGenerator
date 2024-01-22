@@ -37,13 +37,13 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.FormGeneratorMultiStep = void 0;
-var element_creator_1 = require("./element-creator");
 var button_creation_1 = require("./button-creation");
 var form_element_creator_1 = require("./form-element-creator");
 var form_styles_1 = require("./form-styles");
 var config_1 = require("./config");
 var config_2 = require("./config");
 var validator_1 = require("./validator");
+var html_tag_name_1 = require("./html-tag-name");
 var FormGeneratorMultiStep = /** @class */ (function () {
     function FormGeneratorMultiStep(config) {
         var _this = this;
@@ -53,9 +53,9 @@ var FormGeneratorMultiStep = /** @class */ (function () {
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
-                        form = document.createElement('form');
+                        form = html_tag_name_1.formCreator;
                         form.className = 'form-page';
-                        pageTitle = document.createElement('h2');
+                        pageTitle = html_tag_name_1.titleCreator;
                         pageTitle.textContent = title;
                         form.appendChild(pageTitle);
                         _loop_1 = function (fieldName) {
@@ -99,7 +99,7 @@ var FormGeneratorMultiStep = /** @class */ (function () {
                 switch (_a.label) {
                     case 0:
                         if (!(typeof document !== 'undefined')) return [3 /*break*/, 5];
-                        container = document.createElement('div');
+                        container = html_tag_name_1.divCreator;
                         index = 0;
                         _a.label = 1;
                     case 1:
@@ -118,19 +118,21 @@ var FormGeneratorMultiStep = /** @class */ (function () {
                     case 4:
                         document.body.appendChild(container);
                         return [2 /*return*/, container];
-                    case 5: return [2 /*return*/];
+                    case 5:
+                        console.error('The document object not found.');
+                        _a.label = 6;
+                    case 6: return [2 /*return*/];
                 }
             });
         }); };
         this.config = config;
         this.currentPageIndex = 0;
-        this.elementCreator = new element_creator_1.ElementCreator();
-        this.buttonCreation = new button_creation_1.ButtonCreation(this.elementCreator);
+        this.buttonCreation = new button_creation_1.ButtonCreation();
         this.formElementCreation = new form_element_creator_1.FormElementCreation();
         new form_styles_1.formStyles();
     }
     FormGeneratorMultiStep.prototype.createStepIndicators = function (page, step) {
-        var stepIndicatorContainer = document.createElement('div');
+        var stepIndicatorContainer = html_tag_name_1.divCreator;
         stepIndicatorContainer.className = 'step-indicator-container';
         page.appendChild(stepIndicatorContainer);
         for (var i = 1; i <= config_1.formPages.length; i++) {

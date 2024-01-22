@@ -41,7 +41,6 @@ var select_element_creation_strategy_1 = require("./select-element-creation-stra
 var input_creation_strategy_1 = require("./input-creation-strategy");
 var field_element_creation_strategy_1 = require("./field-element-creation-strategy");
 var form_element_creation_context_1 = require("./form-element-creation-context");
-var element_creator_1 = require("./element-creator");
 var FormElementCreation = /** @class */ (function () {
     function FormElementCreation() {
         var _this = this;
@@ -52,13 +51,13 @@ var FormElementCreation = /** @class */ (function () {
                     case 0:
                         switch (element.class) {
                             case 'selects':
-                                formElementCreationContext = new form_element_creation_context_1.FormElementCreationContext(new select_element_creation_strategy_1.SelectElementCreationStrategy(this.elementCreator, new input_creation_strategy_1.InputCreationStrategy(this.elementCreator)));
+                                formElementCreationContext = new form_element_creation_context_1.FormElementCreationContext(new select_element_creation_strategy_1.SelectElementCreationStrategy(new input_creation_strategy_1.InputCreationStrategy()));
                                 break;
                             case 'buttons':
-                                formElementCreationContext = new form_element_creation_context_1.FormElementCreationContext(new input_creation_strategy_1.InputCreationStrategy(this.elementCreator));
+                                formElementCreationContext = new form_element_creation_context_1.FormElementCreationContext(new input_creation_strategy_1.InputCreationStrategy());
                                 break;
                             case 'fields':
-                                formElementCreationContext = new form_element_creation_context_1.FormElementCreationContext(new field_element_creation_strategy_1.FieldElementCreationStrategy(this.elementCreator));
+                                formElementCreationContext = new form_element_creation_context_1.FormElementCreationContext(new field_element_creation_strategy_1.FieldElementCreationStrategy());
                                 break;
                             default:
                                 console.error('Field type not recognized', element.class);
@@ -71,7 +70,6 @@ var FormElementCreation = /** @class */ (function () {
                 }
             });
         }); };
-        this.elementCreator = new element_creator_1.ElementCreator();
     }
     return FormElementCreation;
 }());

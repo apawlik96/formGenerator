@@ -1,14 +1,8 @@
-import { ElementCreator } from "./element-creator";
+import { buttonCreator } from "./html-tag-name";
 
 export class ButtonCreation {
-    private elementCreator: ElementCreator;
-
-    constructor(elementCreator: ElementCreator) {
-        this.elementCreator = elementCreator;
-    }
-
     create(text: string, clickHandler: () => void): HTMLButtonElement {
-        const button = this.elementCreator.createElement('button') as HTMLButtonElement;
+        const button = buttonCreator;
         button.textContent = text;
         button.addEventListener('click', clickHandler);
         return button;

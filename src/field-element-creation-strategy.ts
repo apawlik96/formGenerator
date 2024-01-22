@@ -1,13 +1,8 @@
-import { ElementCreator } from "./element-creator";
 import { FormElementCreationStrategy } from "./form-element-creation-strategy-interface";
+import { selectCreator, optionCreator, inputCreator, divCreator } from "./html-tag-name";
 require('dotenv').config();
 
 export class FieldElementCreationStrategy implements FormElementCreationStrategy {
-    private elementCreator: ElementCreator;
-
-    constructor(elementCreator: ElementCreator) {
-        this.elementCreator = elementCreator;
-    }
 
     create = async (form: HTMLFormElement, element: any): Promise<void> => {
         if (element.name === 'Phone') {
@@ -18,13 +13,13 @@ export class FieldElementCreationStrategy implements FormElementCreationStrategy
     }
     
     private createPhoneInput = async (form: HTMLFormElement, element: any) => {
-        const paragraph = this.elementCreator.createElement('div');
+        const paragraph = divCreator;
         if (paragraph) {
             paragraph.textContent = element.name;
             form.appendChild(paragraph);
-            const select = this.elementCreator.createElement('select') as HTMLSelectElement;
+            const select = selectCreator;
             if (select) {
-                const input = this.elementCreator.createElement('input') as HTMLInputElement;
+                const input = inputCreator;
                 this.setInputAttributes(input, element);
                 await this.createCountryOptions(select);
                 form.appendChild(select);
@@ -36,7 +31,7 @@ export class FieldElementCreationStrategy implements FormElementCreationStrategy
     private async createCountryOptions(select: HTMLSelectElement) {
         const countryTelMap = await this.fetchCountryPhoneCodes();
         countryTelMap.forEach((diallingCode: string, countryName: string) => {
-            const option = this.elementCreator.createElement('option') as HTMLOptionElement;
+            const option = optionCreator;
             option.text = `${countryName}`;
             option.value = `${diallingCode}`;
             select.appendChild(option);
@@ -44,11 +39,11 @@ export class FieldElementCreationStrategy implements FormElementCreationStrategy
     }
 
     private createInputFields(form: HTMLFormElement, element: any): void {
-        const paragraph = this.elementCreator.createElement('div') as HTMLDivElement;
+        const paragraph = divCreator;
         if (paragraph) {
             paragraph.textContent = element.name;
             form.appendChild(paragraph);
-            const input = this.elementCreator.createElement('input') as HTMLInputElement;
+            const input = inputCreator;
             this.setInputAttributes(input, element);
             form.appendChild(input);
         }

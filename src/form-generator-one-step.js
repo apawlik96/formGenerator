@@ -47,10 +47,10 @@ var __spreadArray = (this && this.__spreadArray) || function (to, from, pack) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.FormGeneratorOneStep = exports.FormGenerator = void 0;
 var config_1 = require("./config");
-var element_creator_1 = require("./element-creator");
 var form_element_creator_1 = require("./form-element-creator");
 var form_styles_1 = require("./form-styles");
 var validator_1 = require("./validator");
+var html_tag_name_1 = require("./html-tag-name");
 var FormGenerator = /** @class */ (function () {
     function FormGenerator(config) {
         var _this = this;
@@ -59,7 +59,7 @@ var FormGenerator = /** @class */ (function () {
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
-                        form = this.elementCreator.createElement('form');
+                        form = html_tag_name_1.formCreator;
                         elements = __spreadArray(__spreadArray(__spreadArray([], this.config.selects, true), this.config.fields, true), this.config.buttons, true);
                         _i = 0, elements_1 = elements;
                         _a.label = 1;
@@ -78,7 +78,6 @@ var FormGenerator = /** @class */ (function () {
             });
         }); };
         this.config = config;
-        this.elementCreator = new element_creator_1.ElementCreator();
         this.formElementCreation = new form_element_creator_1.FormElementCreation();
         new form_styles_1.formStyles();
     }
@@ -95,11 +94,14 @@ var FormGeneratorOneStep = /** @class */ (function () {
             var form;
             return __generator(this, function (_a) {
                 switch (_a.label) {
-                    case 0: return [4 /*yield*/, this.formGenerator.createFormElement()];
+                    case 0: return [4 /*yield*/, html_tag_name_1.formCreator];
                     case 1:
                         form = _a.sent();
                         if (typeof document !== 'undefined' && document.body) {
                             document.body.appendChild(form);
+                        }
+                        else {
+                            console.error('The document object not found.');
                         }
                         return [2 /*return*/, form];
                 }
