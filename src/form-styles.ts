@@ -69,6 +69,12 @@ export class formStyles  {
         .error {
             border: 1px solid #ff0000;
         }
+        
+        .step-indicator-container{
+            display: flex;
+            justify-content: space-between;
+            margin: 15px;
+        }
 
         .step-indicator {
             width: 20px;

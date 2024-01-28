@@ -64,7 +64,7 @@ export const formConfig = {
     ]
 };
 
-export const formPages = [
+export const formPages: { title: string; fields: string[]; element?: HTMLFormElement }[] = [
     { title: 'Step 1', fields: ['Username', 'First Name', 'Last Name'] },
     { title: 'Step 2', fields: ['Email', 'Phone'] },
     { title: 'Step 3', fields: ['Password', 'Confirm Password'] },

@@ -47,8 +47,8 @@ var html_tag_name_1 = require("./html-tag-name");
 var FormGeneratorMultiStep = /** @class */ (function () {
     function FormGeneratorMultiStep(config) {
         var _this = this;
-        this.createPage = function (title, fields) { return __awaiter(_this, void 0, void 0, function () {
-            var form, pageTitle, _loop_1, this_1, _i, fields_1, fieldName, prevButton, nextButton;
+        this.createPage = function (title, fields, pageIndex) { return __awaiter(_this, void 0, void 0, function () {
+            var form, pageTitle, _loop_1, this_1, _i, fields_1, fieldName, prevButton, nextButton, submitButton, nextButtonDefault;
             var _this = this;
             return __generator(this, function (_a) {
                 switch (_a.label) {
@@ -85,10 +85,24 @@ var FormGeneratorMultiStep = /** @class */ (function () {
                         _i++;
                         return [3 /*break*/, 1];
                     case 4:
-                        prevButton = this.buttonCreation.create('Previous', function () { return _this.showPreviousPage(); });
-                        form.appendChild(prevButton);
-                        nextButton = this.buttonCreation.create('Next', function () { return _this.showNextPage(); });
-                        form.appendChild(nextButton);
+                        if (pageIndex > 0) {
+                            prevButton = this.buttonCreation.create('Previous', function () { return _this.showPreviousPage(); });
+                            form.appendChild(prevButton);
+                        }
+                        switch (pageIndex) {
+                            case 0:
+                                nextButton = this.buttonCreation.create('Next', function () { return _this.showNextPage(); });
+                                form.appendChild(nextButton);
+                                break;
+                            case config_1.formPages.length - 1:
+                                submitButton = this.buttonCreation.create('Submit', function () { return _this.showNextPage(); });
+                                form.appendChild(submitButton);
+                                break;
+                            default:
+                                nextButtonDefault = this.buttonCreation.create('Next', function () { return _this.showNextPage(); });
+                                form.appendChild(nextButtonDefault);
+                                break;
+                        }
                         return [2 /*return*/, form];
                 }
             });
@@ -105,7 +119,7 @@ var FormGeneratorMultiStep = /** @class */ (function () {
                     case 1:
                         if (!(index < config_1.formPages.length)) return [3 /*break*/, 4];
                         page = config_1.formPages[index];
-                        return [4 /*yield*/, this.createPage(page.title, page.fields)];
+                        return [4 /*yield*/, this.createPage(page.title, page.fields, index)];
                     case 2:
                         formPage = _a.sent();
                         formPage.style.display = index === 0 ? 'block' : 'none';
@@ -118,10 +132,7 @@ var FormGeneratorMultiStep = /** @class */ (function () {
                     case 4:
                         document.body.appendChild(container);
                         return [2 /*return*/, container];
-                    case 5:
-                        console.error('The document object not found.');
-                        _a.label = 6;
-                    case 6: return [2 /*return*/];
+                    case 5: return [2 /*return*/];
                 }
             });
         }); };
@@ -129,12 +140,13 @@ var FormGeneratorMultiStep = /** @class */ (function () {
         this.currentPageIndex = 0;
         this.buttonCreation = new button_creation_1.ButtonCreation();
         this.formElementCreation = new form_element_creator_1.FormElementCreation();
+        this.formValidator = new validator_1.FormValidator();
         new form_styles_1.formStyles();
     }
     FormGeneratorMultiStep.prototype.createStepIndicators = function (page, step) {
         var stepIndicatorContainer = html_tag_name_1.divCreator;
         stepIndicatorContainer.className = 'step-indicator-container';
-        page.appendChild(stepIndicatorContainer);
+        page.insertBefore(stepIndicatorContainer, page.firstChild);
         for (var i = 1; i <= config_1.formPages.length; i++) {
             var stepIndicator = document.createElement('div');
             stepIndicator.className = 'step-indicator';
@@ -144,6 +156,19 @@ var FormGeneratorMultiStep = /** @class */ (function () {
         var stepIndicators = stepIndicatorContainer.querySelectorAll('.step-indicator');
         stepIndicators[step - 1].classList.add('current-step');
     };
+    FormGeneratorMultiStep.prototype.validateCurrentPage = function () {
+        var currentPage = config_1.formPages[this.currentPageIndex];
+        var form = currentPage.element;
+        var inputElements = form.querySelectorAll('input, select');
+        var inputArray = Array.from(inputElements);
+        for (var _i = 0, inputArray_1 = inputArray; _i < inputArray_1.length; _i++) {
+            var inputElement = inputArray_1[_i];
+            if (!this.formValidator.isValid(inputElement)) {
+                return false;
+            }
+        }
+        return true;
+    };
     FormGeneratorMultiStep.prototype.showPreviousPage = function () {
         if (this.currentPageIndex > 0) {
             config_1.formPages[this.currentPageIndex].element.style.display = 'none';
@@ -152,9 +177,12 @@ var FormGeneratorMultiStep = /** @class */ (function () {
         }
     };
     FormGeneratorMultiStep.prototype.showNextPage = function () {
-        if (this.currentPageIndex < config_1.formPages.length - 1) {
+        if (this.currentPageIndex < config_1.formPages.length - 1 && this.validateCurrentPage()) {
             config_1.formPages[this.currentPageIndex].element.style.display = 'none';
             this.currentPageIndex++;
+            config_1.formPages[this.currentPageIndex].element.style.display = 'block';
+        }
+        else if (this.currentPageIndex == config_1.formPages.length - 1 && this.validateCurrentPage()) {
             config_1.formPages[this.currentPageIndex].element.style.display = 'block';
         }
     };
@@ -162,13 +190,11 @@ var FormGeneratorMultiStep = /** @class */ (function () {
 }());
 exports.FormGeneratorMultiStep = FormGeneratorMultiStep;
 var formGenerator = new FormGeneratorMultiStep(config_2.formConfig);
-var formValidator = new validator_1.FormValidator();
 formGenerator.generateForm().then(function (form) {
     if (form) {
         document.body.appendChild(form);
         form.addEventListener('submit', function (event) {
             event.preventDefault();
-            formValidator.validation();
         });
     }
 });

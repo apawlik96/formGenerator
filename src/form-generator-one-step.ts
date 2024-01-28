@@ -7,10 +7,12 @@ import { formCreator } from "./html-tag-name";
 export class FormGenerator {
     config: typeof formConfig;
     private formElementCreation: FormElementCreation;
+    private formValidator: FormValidator;
 
     constructor(config: any) {
         this.config = config;
         this.formElementCreation = new FormElementCreation();
+        this.formValidator = new FormValidator(); 
         new formStyles();
     }
 
@@ -21,6 +23,18 @@ export class FormGenerator {
             await this.formElementCreation.create(form, element);
         }
         return form;
+    }
+
+    validateForm = (): boolean => {
+        const form = document.querySelector('form') as HTMLFormElement;
+        const inputElements = form.querySelectorAll('input, select');
+        const inputArray = Array.from(inputElements);
+        for (const inputElement of inputArray) {
+            if (!this.formValidator.isValid(inputElement as HTMLInputElement)) {
+                return false;
+            }
+        }
+        return true;
     }
 }
 
@@ -45,13 +59,12 @@ export class FormGeneratorOneStep {
 
 const formGenerator = new FormGenerator(formConfig);
 const formGeneratorOneStep = new FormGeneratorOneStep(formGenerator);
-const formValidator = new FormValidator();
 
 formGeneratorOneStep.generateForm().then(form => {
     if (form) {
         form.addEventListener('submit', function (event: Event) {
             event.preventDefault();
-            formValidator.validation();
+            formGenerator.validateForm();
         });
     }
 });

@@ -77,8 +77,21 @@ var FormGenerator = /** @class */ (function () {
                 }
             });
         }); };
+        this.validateForm = function () {
+            var form = document.querySelector('form');
+            var inputElements = form.querySelectorAll('input, select');
+            var inputArray = Array.from(inputElements);
+            for (var _i = 0, inputArray_1 = inputArray; _i < inputArray_1.length; _i++) {
+                var inputElement = inputArray_1[_i];
+                if (!_this.formValidator.isValid(inputElement)) {
+                    return false;
+                }
+            }
+            return true;
+        };
         this.config = config;
         this.formElementCreation = new form_element_creator_1.FormElementCreation();
+        this.formValidator = new validator_1.FormValidator();
         new form_styles_1.formStyles();
     }
     return FormGenerator;
@@ -113,12 +126,11 @@ var FormGeneratorOneStep = /** @class */ (function () {
 exports.FormGeneratorOneStep = FormGeneratorOneStep;
 var formGenerator = new FormGenerator(config_1.formConfig);
 var formGeneratorOneStep = new FormGeneratorOneStep(formGenerator);
-var formValidator = new validator_1.FormValidator();
 formGeneratorOneStep.generateForm().then(function (form) {
     if (form) {
         form.addEventListener('submit', function (event) {
             event.preventDefault();
-            formValidator.validation();
+            formGenerator.validateForm();
         });
     }
 });
