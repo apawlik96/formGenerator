@@ -1,4 +1,4 @@
-export {formConfig, formPages} from './config';
+export {formConfigEn, formPagesEn, formConfigPl, formPagesPl} from './config';
 export {ElementCreator} from './element-creator';
 export {FormElementCreationStrategy} from "./form-element-creation-strategy-interface";
 export {FormElementCreation} from './form-element-creator';

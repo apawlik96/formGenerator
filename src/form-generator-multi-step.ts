@@ -1,24 +1,26 @@
 import { ButtonCreation } from "./button-creation";
 import { FormElementCreation } from "./form-element-creator";
 import { formStyles } from "./form-styles";
-import { formPages } from "./config";
-import { formConfig } from "./config";
+import { formPagesEn } from "./config";
+import { formConfigEn } from "./config";
 import { FormValidator } from "./validator";
 import { divCreator,formCreator,titleCreator } from "./html-tag-name";
 
 export class FormGeneratorMultiStep {
     config: any;
+    formPages: any;
     currentPageIndex: number;
     private formElementCreation: FormElementCreation;
     private buttonCreation: ButtonCreation;
     private formValidator: FormValidator;
 
-    constructor(config: any) {
+    constructor(config: any, formPages: any) {
         this.config = config;
+        this.formPages = formPages;
         this.currentPageIndex = 0;
         this.buttonCreation = new ButtonCreation();
         this.formElementCreation = new FormElementCreation();
-        this.formValidator = new FormValidator ();
+        this.formValidator = new FormValidator (config);
         new formStyles();
     }
 
@@ -26,7 +28,7 @@ export class FormGeneratorMultiStep {
         const stepIndicatorContainer = divCreator;
         stepIndicatorContainer.className = 'step-indicator-container';
         page.insertBefore(stepIndicatorContainer, page.firstChild);
-        for (let i = 1; i <= formPages.length; i++) {
+        for (let i = 1; i <= this.formPages.length; i++) {
             const stepIndicator = document.createElement('div');
             stepIndicator.className = 'step-indicator';
             stepIndicator.textContent = i.toString();
@@ -47,28 +49,25 @@ export class FormGeneratorMultiStep {
             await this.formElementCreation.create(form, element);
         }
         if (pageIndex > 0) {
-            const prevButton = this.buttonCreation.create('Previous', () => this.showPreviousPage());
+            const prevButton = this.buttonCreation.create(this.config.buttons.find((button: any)  => button.name === 'previous').value, () => this.showPreviousPage());
             form.appendChild(prevButton);
         }
-        switch (pageIndex) {
-            case 0:
-                const nextButton = this.buttonCreation.create('Next', () => this.showNextPage());
-                form.appendChild(nextButton);
-                break;
-            case formPages.length - 1:
-                const submitButton = this.buttonCreation.create('Submit', () => this.showNextPage());
+
+        switch (true) {
+            case pageIndex === this.formPages.length - 1:
+                const submitButton = this.buttonCreation.create(this.config.buttons.find((button: any)  => button.name === 'submit').value, () => this.onSubmitButtonClick());
                 form.appendChild(submitButton);
                 break;
             default:
-                const nextButtonDefault = this.buttonCreation.create('Next', () => this.showNextPage());
-                form.appendChild(nextButtonDefault);
+                const nextButton = this.buttonCreation.create(this.config.buttons.find((button: any)  => button.name === 'next').value, () => this.showNextPage());
+                form.appendChild(nextButton);
                 break;
         }
         return form;
     }
 
     validateCurrentPage(): boolean {
-        const currentPage = formPages[this.currentPageIndex];
+        const currentPage = this.formPages[this.currentPageIndex];
         const form = currentPage.element as HTMLFormElement;
         const inputElements = form.querySelectorAll('input, select');
         const inputArray = Array.from(inputElements);
@@ -82,19 +81,25 @@ export class FormGeneratorMultiStep {
 
     showPreviousPage(): void {
         if (this.currentPageIndex > 0) {
-            (formPages[this.currentPageIndex] as any).element.style.display = 'none';
+            (this.formPages[this.currentPageIndex] as any).element.style.display = 'none';
             this.currentPageIndex--;
-            (formPages[this.currentPageIndex] as any).element.style.display = 'block';
+            (this.formPages[this.currentPageIndex] as any).element.style.display = 'block';
         }
     }
 
     showNextPage(): void {
-        if (this.currentPageIndex < formPages.length - 1 && this.validateCurrentPage()) {
-            (formPages[this.currentPageIndex] as any).element.style.display = 'none';
+        if (this.currentPageIndex < this.formPages.length - 1 && this.validateCurrentPage()) {
+            (this.formPages[this.currentPageIndex] as any).element.style.display = 'none';
             this.currentPageIndex++;
-            (formPages[this.currentPageIndex] as any).element.style.display = 'block';
-        } else if (this.currentPageIndex == formPages.length - 1 && this.validateCurrentPage()) {
-            (formPages[this.currentPageIndex] as any).element.style.display = 'block';
+            (this.formPages[this.currentPageIndex] as any).element.style.display = 'block';
+        }
+    }
+
+    onSubmitButtonClick(): void {
+        if (this.validateCurrentPage()) {
+            console.log('Form submitted.');
+        } else {
+            console.error('Form validation failed.');
         }
     }
 
@@ -102,12 +107,12 @@ export class FormGeneratorMultiStep {
         let container;
         if (typeof document !== 'undefined') {
             container = divCreator;
-            for (let index = 0; index < formPages.length; index++) {
-                const page = formPages[index];
+            for (let index = 0; index < this.formPages.length; index++) {
+                const page = this.formPages[index];
                 const formPage = await this.createPage(page.title, page.fields, index);
                 formPage.style.display = index === 0 ? 'block' : 'none';
                 container.appendChild(formPage);
-                (formPages[index] as any).element = formPage;
+                (this.formPages[index] as any).element = formPage;
             }
         document.body.appendChild(container);
         return container;
@@ -115,7 +120,7 @@ export class FormGeneratorMultiStep {
     }
 }
 
-const formGenerator = new FormGeneratorMultiStep(formConfig);
+const formGenerator = new FormGeneratorMultiStep(formConfigEn, formPagesEn);
 
 formGenerator.generateForm().then(form => {
     if (form) {

@@ -1,13 +1,24 @@
 export class FormValidator {
+    config: any;
+
+    constructor(config: any) {
+        this.config = config;
+    }
 
     isEmailValid(email: string): boolean {
         const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
         return emailRegex.test(email);
     }
 
-    validationNumber(phoneNumber: string): boolean {
-        const phoneRegex = /^[\d\s-]+$/;
-        return phoneRegex.test(phoneNumber);
+    validationNumber(phoneNumber: string): any {
+        var selectElement = document.getElementById('phoneCountryCodeSelect') as HTMLSelectElement;
+            if (selectElement) {
+                var selectedOption = selectElement.options[selectElement.selectedIndex];
+                var selectedValue = selectedOption.value;
+                return phoneNumber.startsWith(selectedValue);
+            } else {
+                console.error("Select element not found!");
+            }
     }
 
     arePasswordsMatching(): any {
@@ -20,11 +31,11 @@ export class FormValidator {
 
     isStrongPassword(password: string): any {
         const requirements = [
-            { regex: /.{8,}/, message: '8 characters' },
-            { regex: /[A-Z]/, message: 'one uppercase letter' },
-            { regex: /[a-z]/, message: 'one lowercase letter' },
-            { regex: /\d/, message: 'one digit' },
-            { regex: /[!@#$%^&*(),.?":{}|<>]/, message: 'one special character' },
+            { regex: /.{8,}/, message: this.config.error[0].characters },
+            { regex: /[A-Z]/, message: this.config.error[0].uppercase },
+            { regex: /[a-z]/, message: this.config.error[0].lowercase },
+            { regex: /\d/, message: this.config.error[0].digit },
+            { regex: /[!@#$%^&*(),.?":{}|<>]/, message: this.config.error[0].character },
         ];
         const missingSigns = requirements.filter(({ regex }) => !regex.test(password)).map(({ message }) => message);
         return missingSigns.join(', ');
@@ -50,40 +61,42 @@ export class FormValidator {
     }
 
     isValid(inputElement: HTMLInputElement): boolean {
-        if (inputElement instanceof HTMLInputElement) {
-            let isValid = true;
-            let validationError = '';
+        let isValid = true;
+        let validationError = '';
+        const fieldConfig = this.config.fields.find((field: any) => field.name === inputElement.name);
+    
+        if (fieldConfig) {
+            validationError = fieldConfig.error || '';
+    
             switch (inputElement.name) {
                 case 'Email':
                     isValid = this.isEmailValid(inputElement.value.trim());
-                    validationError = 'Invalid email address.';
                     break;
                 case 'Phone':
                     isValid = this.validationNumber(inputElement.value.trim());
-                    validationError = 'Invalid phone number.';
                     break;
                 case 'Confirm Password':
                     isValid = this.arePasswordsMatching();
-                    validationError = 'Passwords do not match.';
                     break;
                 case 'Password':
                     const missingSigns = this.isStrongPassword(inputElement.value.trim());
                     isValid = missingSigns === '';
-                    validationError = 'Password is not strong enough. Missing at least ' + missingSigns;
+                    validationError = validationError + missingSigns;
                     break;
                 default:
                     break;
             }
-
-            const errorParagraphId = `${inputElement.name}-error`;
-            const errorParagraph = document.getElementById(errorParagraphId) as HTMLParagraphElement;
-            if (!isValid) {
-                this.createErrorParagraph(validationError, inputElement);
-            } else {
-                this.removeErrorParagraph(errorParagraph);
-            }
-            return isValid;
         }
-        return true;
+    
+        const errorParagraphId = `${inputElement.name}-error`;
+        const errorParagraph = document.getElementById(errorParagraphId) as HTMLParagraphElement;
+    
+        if (!isValid) {
+            this.createErrorParagraph(validationError, inputElement);
+        } else {
+            this.removeErrorParagraph(errorParagraph);
+        }
+    
+        return isValid;
     }
 }

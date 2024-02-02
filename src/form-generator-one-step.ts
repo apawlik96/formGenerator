@@ -1,18 +1,18 @@
-import { formConfig } from "./config";
+import { formConfigPl } from "./config";
 import { FormElementCreation } from "./form-element-creator";
 import { formStyles } from "./form-styles";
 import { FormValidator } from "./validator";
 import { formCreator } from "./html-tag-name";
 
 export class FormGenerator {
-    config: typeof formConfig;
+    config: any;
     private formElementCreation: FormElementCreation;
     private formValidator: FormValidator;
 
     constructor(config: any) {
         this.config = config;
         this.formElementCreation = new FormElementCreation();
-        this.formValidator = new FormValidator(); 
+        this.formValidator = new FormValidator(config); 
         new formStyles();
     }
 
@@ -57,7 +57,7 @@ export class FormGeneratorOneStep {
     }
 }
 
-const formGenerator = new FormGenerator(formConfig);
+const formGenerator = new FormGenerator(formConfigPl);
 const formGeneratorOneStep = new FormGeneratorOneStep(formGenerator);
 
 formGeneratorOneStep.generateForm().then(form => {

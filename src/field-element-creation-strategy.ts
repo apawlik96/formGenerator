@@ -39,14 +39,9 @@ export class FieldElementCreationStrategy implements FormElementCreationStrategy
     }
 
     private createInputFields(form: HTMLFormElement, element: any): void {
-        const paragraph = divCreator;
-        if (paragraph) {
-            paragraph.textContent = element.name;
-            form.appendChild(paragraph);
-            const input = inputCreator;
-            this.setInputAttributes(input, element);
-            form.appendChild(input);
-        }
+        const input = inputCreator;
+        this.setInputAttributes(input, element);
+        form.appendChild(input);
     }
 
     private setInputAttributes(input: HTMLInputElement, element: any): void {
