@@ -26,15 +26,41 @@ export class FormGeneratorMultiStep {
 
     createStepIndicators(page: HTMLFormElement, step: number): void {
         const stepIndicatorContainer = divCreator;
-        stepIndicatorContainer.className = 'step-indicator-container';
+        stepIndicatorContainer.className = 'step-indicator-container-top';
         page.insertBefore(stepIndicatorContainer, page.firstChild);
         for (let i = 1; i <= this.formPages.length; i++) {
-            const stepIndicator = document.createElement('div');
+            const stepIndicatorWrapper = divCreator;
+            stepIndicatorWrapper.className = 'step-indicator-wrapper';
+            stepIndicatorContainer.appendChild(stepIndicatorWrapper);
+
+            const stepIndicator = divCreator;
             stepIndicator.className = 'step-indicator';
             stepIndicator.textContent = i.toString();
             stepIndicatorContainer.appendChild(stepIndicator);
+
+            const title = titleCreator;
+            title.className = 'step-title';
+            title.textContent = this.formPages[i - 1].title;
+            stepIndicatorWrapper.appendChild(title);
+
+            if (i < step) {
+                stepIndicator.classList.add('green-line');
+            }
         }
+
         const stepIndicators = stepIndicatorContainer.querySelectorAll('.step-indicator');
+        const stepIndicatorWrapper = stepIndicatorContainer.querySelectorAll('.step-indicator-wrapper');
+
+        for (let i = 0; i < stepIndicators.length - 1; i++) {
+            const line = divCreator;
+            line.className = 'step-indicator-line';
+            stepIndicatorContainer.insertBefore(line, stepIndicatorWrapper[i + 1]);
+    
+            if (i < step - 1) {
+                line.classList.add('green-line');
+            }
+        }
+
         stepIndicators[step - 1].classList.add('current-step');
     }
 
@@ -109,7 +135,7 @@ export class FormGeneratorMultiStep {
             container = divCreator;
             for (let index = 0; index < this.formPages.length; index++) {
                 const page = this.formPages[index];
-                const formPage = await this.createPage(page.title, page.fields, index);
+                const formPage = await this.createPage(page.step, page.fields, index);
                 formPage.style.display = index === 0 ? 'block' : 'none';
                 container.appendChild(formPage);
                 (this.formPages[index] as any).element = formPage;

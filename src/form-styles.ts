@@ -65,20 +65,27 @@ export class formStyles  {
         input[type="submit"]:hover {
             background-color: #45a049;
         }
-    
-        .error {
-            border: 1px solid #ff0000;
+
+        .step-indicator-wrapper {
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
         }
-        
-        .step-indicator-container{
+
+        .step-indicator-container-top {
             display: flex;
             justify-content: space-between;
             margin: 15px;
         }
 
+        .step-title {
+            font-size: 10px;
+        }
+
         .step-indicator {
-            width: 20px;
-            height: 20px;
+            width: 30px;
+            height: 30px;
             border-radius: 50%;
             background-color: #ddd;
             display: flex;
@@ -90,6 +97,18 @@ export class formStyles  {
         .step-indicator.current-step {
             background-color: #4caf50;
             color: white;
+        }
+
+        .step-indicator-line {
+            flex: 1;
+            height: 3px;
+            background-color: #ddd;
+            margin: 15px 0;
+        }
+
+        .green-line {
+            color:white;
+            background-color: #4caf50;
         }
         `;
 

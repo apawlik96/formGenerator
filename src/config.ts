@@ -180,14 +180,14 @@ export const formConfigPl = {
     ]
 };
 
-export const formPagesEn: { title: string; fields: string[]; element?: HTMLFormElement }[] = [
-    { title: 'Step 1', fields: ['Username', 'First Name', 'Last Name'] },
-    { title: 'Step 2', fields: ['Email', 'Phone'] },
-    { title: 'Step 3', fields: ['Password', 'Confirm Password'] },
+export const formPagesEn: { step: string; title: string; fields: string[]; element?: HTMLFormElement }[] = [
+    { step: 'Step 1', title: 'Personal Details', fields: ['Username', 'First Name', 'Last Name'] },
+    { step: 'Step 2', title: 'Contact Information', fields: ['Email', 'Phone'] },
+    { step: 'Step 3', title: 'Account Setup', fields: ['Password', 'Confirm Password'] },
 ];
 
-export const formPagesPl: { title: string; fields: string[]; element?: HTMLFormElement }[] = [
-    { title: 'Etap 1', fields: ['Username', 'First Name', 'Last Name'] },
-    { title: 'Etap 2', fields: ['Email', 'Phone'] },
-    { title: 'Etap 3', fields: ['Password', 'Confirm Password'] },
+export const formPagesPl: { step: string; title: string; fields: string[]; element?: HTMLFormElement }[] = [
+    { step: 'Etap 1', title: 'Dane osobowe', fields: ['Username', 'First Name', 'Last Name'] },
+    { step: 'Etap 2', title: 'Dane kontaktowe', fields: ['Email', 'Phone'] },
+    { step: 'Etap 3', title: 'Hasło i potwierdzenie', fields: ['Password', 'Confirm Password'] },
 ];
