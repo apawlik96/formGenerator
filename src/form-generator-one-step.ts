@@ -1,76 +1,70 @@
-import { ElementCreator } from "./element-creator";
-import { FormElementCreator } from "./form-element-creator";
+import { formConfigPl } from "./config";
+import { FormElementCreation } from "./form-element-creator";
 import { formStyles } from "./form-styles";
-import { formConfig } from "./config";
 import { FormValidator } from "./validator";
+import { formCreator } from "./html-tag-name";
 
-interface Field {
-    class: string;
-    name: string;
-    type: string;
-    placeholder?: string;
-    for?: string;
-    value?: string;
-}
-
-
-interface FormConfig {
-    fields: Array<Field>;
-    selects: Array<Field>;
-    data: Array<Field>;
-    buttons: Array<Field>;
-}
-
-interface FormGenerator {
-    config: FormConfig;
-}
-
-export class FormGeneratorImpl implements FormGenerator {
-    config: FormConfig;
-
-    private elementCreator: ElementCreator;
-    private formElementCreator: FormElementCreator;
+export class FormGenerator {
+    config: any;
+    private formElementCreation: FormElementCreation;
+    private formValidator: FormValidator;
 
     constructor(config: any) {
         this.config = config;
-        this.elementCreator = new ElementCreator();
-        this.formElementCreator = new FormElementCreator(this.elementCreator);
+        this.formElementCreation = new FormElementCreation();
+        this.formValidator = new FormValidator(config); 
+        new formStyles();
     }
 
-    generateForm(): HTMLFormElement {
-        const form = this.elementCreator.createElement('form') as HTMLFormElement;
-        const elements = [...this.config.selects, ...this.config.fields, ...this.config.data, ...this.config.buttons];
-
-        elements.forEach((element) => {
-            this.formElementCreator.createFormElement(form, element);
-        });
+    createFormElement= async (): Promise<HTMLFormElement> => {
+        const form = formCreator;
+        const elements = [...this.config.selects, ...this.config.fields, ...this.config.buttons];
+        for (const element of elements) {
+            await this.formElementCreation.create(form, element);
+        }
         return form;
+    }
+
+    validateForm = (): boolean => {
+        const form = document.querySelector('form') as HTMLFormElement;
+        const inputElements = form.querySelectorAll('input, select');
+        const inputArray = Array.from(inputElements);
+        for (const inputElement of inputArray) {
+            if (!this.formValidator.isValid(inputElement as HTMLInputElement)) {
+                return false;
+            }
+        }
+        return true;
     }
 }
 
 export class FormGeneratorOneStep {
-    private formGenerator: FormGeneratorImpl;
+    private formGenerator: FormGenerator;
 
-    constructor(formGenerator: FormGeneratorImpl) {
+    constructor(formGenerator: FormGenerator) {
         this.formGenerator = formGenerator;
         new formStyles();
     }
 
-    generateForm(): HTMLFormElement {
-        const form = this.formGenerator.generateForm();
+    async generateForm(): Promise<HTMLFormElement | undefined> {
+        const form = await formCreator;
+        if (typeof document !== 'undefined' && document.body) {
+            document.body.appendChild(form);
+        } else {
+            console.error('The document object not found.')
+        }
         return form;
     }
 }
 
-const formGenerator = new FormGeneratorImpl(formConfig);
+const formGenerator = new FormGenerator(formConfigPl);
 const formGeneratorOneStep = new FormGeneratorOneStep(formGenerator);
-const form = formGeneratorOneStep.generateForm();
 
-const formValidator = new FormValidator();
-
-document.body.appendChild(form);
-
-form.addEventListener('submit', function (event) {
-    event.preventDefault();
-    formValidator.validation();
+formGeneratorOneStep.generateForm().then(form => {
+    if (form) {
+        form.addEventListener('submit', function (event: Event) {
+            event.preventDefault();
+            formGenerator.validateForm();
+        });
+    }
 });

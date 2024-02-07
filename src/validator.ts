@@ -1,87 +1,102 @@
 export class FormValidator {
+    config: any;
 
-    private form: HTMLFormElement;
-
-    constructor() {
-        this.form = document.querySelector('form') as HTMLFormElement;
+    constructor(config: any) {
+        this.config = config;
     }
 
-    validation(): void {
-        const form = document.querySelector('form') as HTMLFormElement;
-        const email = (form.querySelector('[name="Email"]') as HTMLInputElement).value;
-        const password = (form.querySelector('[name="Password"]') as HTMLInputElement).value;
-        const confirmPassword = (form.querySelector('[name="Confirm Password"]') as HTMLInputElement).value;
-
-        const emailRegex: RegExp = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
-
-        this.isStrongPassword(password);
-        this.validationRules(confirmPassword !== password, "Passwords do not match", '[name="Confirm Password"]', '.error-pass');
-        this.validationRules(!emailRegex.test(email), "Email is not valid", '[name="Email"]', '.error-email');
-        this.validationNumber();
+    isEmailValid(email: string): boolean {
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        return emailRegex.test(email);
     }
 
-    isStrongPassword(password: string) {
+    validationNumber(phoneNumber: string): any {
+        var selectElement = document.getElementById('phoneCountryCodeSelect') as HTMLSelectElement;
+            if (selectElement) {
+                var selectedOption = selectElement.options[selectElement.selectedIndex];
+                var selectedValue = selectedOption.value;
+                return phoneNumber.startsWith(selectedValue);
+            } else {
+                console.error("Select element not found!");
+            }
+    }
+
+    arePasswordsMatching(): any {
+        const passwordInput = document.querySelector('input[name="Password"]') as HTMLInputElement;
+        const confirmPasswordInput = document.querySelector('input[name="Confirm Password"]') as HTMLInputElement;
+        const password = passwordInput ? passwordInput.value : '';
+        const confirmPassword = confirmPasswordInput ? confirmPasswordInput.value : '';
+        return password === confirmPassword;
+    }
+
+    isStrongPassword(password: string): any {
         const requirements = [
-            { regex: /.{8,}/, message: 'at least 8 characters' },
-            { regex: /[A-Z]/, message: 'at least one uppercase letter' },
-            { regex: /[a-z]/, message: 'at least one lowercase letter' },
-            { regex: /\d/, message: 'at least one digit' },
-            { regex: /[!@#$%^&*(),.?":{}|<>]/, message: 'at least one special character' },
+            { regex: /.{8,}/, message: this.config.error[0].characters },
+            { regex: /[A-Z]/, message: this.config.error[0].uppercase },
+            { regex: /[a-z]/, message: this.config.error[0].lowercase },
+            { regex: /\d/, message: this.config.error[0].digit },
+            { regex: /[!@#$%^&*(),.?":{}|<>]/, message: this.config.error[0].character },
         ];
-    
         const missingSigns = requirements.filter(({ regex }) => !regex.test(password)).map(({ message }) => message);
+        return missingSigns.join(', ');
+    }
+
+    createErrorParagraph(validationError: string, inputElement: any): void  {
+        const errorParagraphId = `${inputElement.name}-error`;
+        let errorParagraph = document.getElementById(errorParagraphId) as HTMLParagraphElement;
+        if (errorParagraph === null || errorParagraph === undefined) {
+            errorParagraph = document.createElement('p');
+            errorParagraph.id = errorParagraphId;
+            errorParagraph.textContent = validationError;
+            errorParagraph.style.color = 'red';
+            const inputElementNode = inputElement.parentNode as Node;
+            inputElementNode.insertBefore(errorParagraph, inputElement.nextSibling);
+        }
+    }
+
+    removeErrorParagraph(errorParagraph: HTMLElement): void  {
+        if (errorParagraph !== null && errorParagraph !== undefined) {
+            errorParagraph.remove();
+        }
+    }
+
+    isValid(inputElement: HTMLInputElement): boolean {
+        let isValid = true;
+        let validationError = '';
+        const fieldConfig = this.config.fields.find((field: any) => field.name === inputElement.name);
     
-        if (missingSigns.length > 0){
-            this.createValidationElement('Password is not strong enough. Missing: ' + missingSigns.join(', '),'[name="Password"]', '.error-pass');
+        if (fieldConfig) {
+            validationError = fieldConfig.error || '';
+    
+            switch (inputElement.name) {
+                case 'Email':
+                    isValid = this.isEmailValid(inputElement.value.trim());
+                    break;
+                case 'Phone':
+                    isValid = this.validationNumber(inputElement.value.trim());
+                    break;
+                case 'Confirm Password':
+                    isValid = this.arePasswordsMatching();
+                    break;
+                case 'Password':
+                    const missingSigns = this.isStrongPassword(inputElement.value.trim());
+                    isValid = missingSigns === '';
+                    validationError = validationError + missingSigns;
+                    break;
+                default:
+                    break;
+            }
+        }
+    
+        const errorParagraphId = `${inputElement.name}-error`;
+        const errorParagraph = document.getElementById(errorParagraphId) as HTMLParagraphElement;
+    
+        if (!isValid) {
+            this.createErrorParagraph(validationError, inputElement);
         } else {
-            this.removeValidationError('.error-pass')
+            this.removeErrorParagraph(errorParagraph);
         }
-        
-    }
-
-    validationNumber() {
-        const phoneNumberOption = (this.form.querySelector('option') as HTMLOptionElement).text;
-        const phone = (this.form.querySelector('[name="Phone"]') as HTMLInputElement).value;
     
-        const cleanedNumber = phone.replace(/\D/g, '');
-        const polishRegex = /^(?:\+48|0)?[1-9]\d{8}$/;
-        const americanRegex = /^(?:\+1)?[2-9]\d{9}$/;
-    
-        if(phoneNumberOption === "Poland (+48)") {
-            this.validationRules (!polishRegex.test(cleanedNumber), "Invalid phone number", '[name="Phone"]', '.error-phone')
-        } else if(phoneNumberOption === "United States (+1)"){
-            this.validationRules (!americanRegex.test(cleanedNumber), "Invalid phone number", '[name="Phone"]', '.error-phone')
-        }
+        return isValid;
     }
-
-    validationRules(validationRule: boolean, validationError: string, elementConfigFields: string, className: string): void {
-        if (validationRule) {
-            this.createValidationElement(validationError, elementConfigFields, className);
-        } else {
-            this.removeValidationError(className);
-        }
-    }
-
-    createValidationElement(validationError: string, elementConfigFields: string, className: string): void {
-        const form = document.querySelector('form') as HTMLFormElement;
-        const errorMsg = form.querySelector(className) as HTMLParagraphElement;
-
-        if (!errorMsg) {
-            const errorMsg = document.createElement('p');
-            errorMsg.classList.add(className.substring(1));
-            errorMsg.textContent = validationError;
-            const elementInput = form.querySelector(elementConfigFields) as HTMLElement;
-            const elementInputNode = elementInput.parentNode as Node;
-            elementInputNode.insertBefore(errorMsg, elementInput.nextSibling);
-        }
-    }
-
-    removeValidationError(className: string): void {
-        const form = document.querySelector('form') as HTMLFormElement;
-        const errorMsg = form.querySelector(className) as HTMLParagraphElement;
-        if (errorMsg) {
-            errorMsg.remove();
-        }
-    }
-
 }
