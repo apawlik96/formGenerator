@@ -8,6 +8,8 @@ export class ElementCreator {
             });
         }
         return element;
+        } else {
+            console.error('The document object not found.')
         }
     }
 }

@@ -1,10 +1,10 @@
-import { ButtonCreation } from "./button-creation";
-import { FormElementCreation } from "./form-element-creator";
-import { formStylesMultiStep } from "./form-styles";
-import { formPagesEn } from "./config";
-import { formConfigEn } from "./config";
-import { FormValidator } from "./validator";
-import { divCreator,formCreator,titleCreator } from "./html-tag-name";
+import { ButtonCreation } from "../form-element-creator/button-creation";
+import { FormElementCreation } from "../form-element-creator-strategy/form-element-creator";
+import { formStylesMultiStep } from "../form-styles/form-styles-multi-step";
+import { formPagesEn } from "../config/config-en";
+import { formConfigEn } from "../config/config-en";
+import { FormValidator } from "../validator";
+import { divCreator,formCreator,titleCreator } from "../html-tag-name";
 
 export class FormGeneratorMultiStep {
     config: any;
@@ -135,7 +135,7 @@ export class FormGeneratorMultiStep {
             container = divCreator;
             for (let index = 0; index < this.formPages.length; index++) {
                 const page = this.formPages[index];
-                const formPage = await this.createPage(page.step, page.fields, index);
+                const formPage = await this.createPage(page.title, page.fields, index);
                 formPage.style.display = index === 0 ? 'block' : 'none';
                 container.appendChild(formPage);
                 (this.formPages[index] as any).element = formPage;

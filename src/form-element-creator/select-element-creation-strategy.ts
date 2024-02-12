@@ -1,6 +1,6 @@
-import { FormElementCreationStrategy } from "./form-element-creation-strategy-interface";
+import { FormElementCreationStrategy } from "../form-element-creator-strategy/form-element-creation-strategy-interface";
 import { InputCreationStrategy } from "./input-creation-strategy";
-import { labelCreator } from "./html-tag-name";
+import { labelCreator } from "../html-tag-name";
 
 export class SelectElementCreationStrategy implements FormElementCreationStrategy {
     private inputCreationStrategy: InputCreationStrategy;

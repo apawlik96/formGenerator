@@ -1,5 +1,5 @@
-import { FormElementCreationStrategy } from "./form-element-creation-strategy-interface";
-import { selectCreator, optionCreator, inputCreator, divCreator } from "./html-tag-name";
+import { FormElementCreationStrategy } from "../form-element-creator-strategy/form-element-creation-strategy-interface";
+import { selectCreator, optionCreator, inputCreator, divCreator } from "../html-tag-name";
 require('dotenv').config();
 
 export class FieldElementCreationStrategy implements FormElementCreationStrategy {
@@ -22,6 +22,8 @@ export class FieldElementCreationStrategy implements FormElementCreationStrategy
             await this.createCountryOptions(select);
             form.appendChild(select);
             form.appendChild(input);
+        } else {
+            console.error("Select element not found.");
         }
     };
     

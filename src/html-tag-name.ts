@@ -1,4 +1,4 @@
-import { ElementCreator } from "./element-creator";
+import { ElementCreator } from "./form-element-creator/element-creator";
 
 const elementCreator = new ElementCreator();
 

@@ -2,11 +2,11 @@
   "name": "form-generator",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "main": "dist/index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "tsc",
-    "dev": "npm run build && node src/index.js"
+    "dev": "npm run build && node dist/index.js"
   },
   "repository": {
     "type": "git",
