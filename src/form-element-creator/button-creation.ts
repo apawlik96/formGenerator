@@ -1,4 +1,4 @@
-import { buttonCreator } from "./html-tag-name";
+import { buttonCreator } from "../html-tag-name";
 
 export class ButtonCreation {
     create(text: string, clickHandler: () => void): HTMLButtonElement {
