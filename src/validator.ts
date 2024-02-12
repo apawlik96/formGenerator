@@ -87,14 +87,20 @@ export class FormValidator {
                     break;
             }
         }
+
+        if (fieldConfig && fieldConfig.placeholder.includes('*') && inputElement.value.trim() === '') {
+            isValid = false;
+        }
     
         const errorParagraphId = `${inputElement.name}-error`;
         const errorParagraph = document.getElementById(errorParagraphId) as HTMLParagraphElement;
     
         if (!isValid) {
             this.createErrorParagraph(validationError, inputElement);
+            inputElement.classList.add('invalid-field');
         } else {
             this.removeErrorParagraph(errorParagraph);
+            inputElement.classList.remove('invalid-field');
         }
     
         return isValid;

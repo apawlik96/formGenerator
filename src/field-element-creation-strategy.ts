@@ -13,18 +13,15 @@ export class FieldElementCreationStrategy implements FormElementCreationStrategy
     }
     
     private createPhoneInput = async (form: HTMLFormElement, element: any) => {
-        const paragraph = divCreator;
-        if (paragraph) {
-            paragraph.textContent = element.name;
-            form.appendChild(paragraph);
-            const select = selectCreator;
-            if (select) {
-                const input = inputCreator;
-                this.setInputAttributes(input, element);
-                await this.createCountryOptions(select);
-                form.appendChild(select);
-                form.appendChild(input);
-            }
+        const divPhone = divCreator;
+        divPhone.id = 'divPhone';
+        const select = selectCreator;
+        if (select) {
+            const input = inputCreator;
+            this.setInputAttributes(input, element);
+            await this.createCountryOptions(select);
+            form.appendChild(select);
+            form.appendChild(input);
         }
     };
     

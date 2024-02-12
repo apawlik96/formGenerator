@@ -1,6 +1,6 @@
 import { ButtonCreation } from "./button-creation";
 import { FormElementCreation } from "./form-element-creator";
-import { formStyles } from "./form-styles";
+import { formStylesMultiStep } from "./form-styles";
 import { formPagesEn } from "./config";
 import { formConfigEn } from "./config";
 import { FormValidator } from "./validator";
@@ -21,7 +21,7 @@ export class FormGeneratorMultiStep {
         this.buttonCreation = new ButtonCreation();
         this.formElementCreation = new FormElementCreation();
         this.formValidator = new FormValidator (config);
-        new formStyles();
+        new formStylesMultiStep();
     }
 
     createStepIndicators(page: HTMLFormElement, step: number): void {

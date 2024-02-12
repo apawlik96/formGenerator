@@ -1,6 +1,6 @@
 import { formConfigPl } from "./config";
 import { FormElementCreation } from "./form-element-creator";
-import { formStyles } from "./form-styles";
+import { formStylesOneStep } from "./form-styles";
 import { FormValidator } from "./validator";
 import { formCreator } from "./html-tag-name";
 
@@ -13,7 +13,7 @@ export class FormGenerator {
         this.config = config;
         this.formElementCreation = new FormElementCreation();
         this.formValidator = new FormValidator(config); 
-        new formStyles();
+        new formStylesOneStep();
     }
 
     createFormElement= async (): Promise<HTMLFormElement> => {
@@ -43,7 +43,7 @@ export class FormGeneratorOneStep {
 
     constructor(formGenerator: FormGenerator) {
         this.formGenerator = formGenerator;
-        new formStyles();
+        new formStylesOneStep();
     }
 
     async generateForm(): Promise<HTMLFormElement | undefined> {
