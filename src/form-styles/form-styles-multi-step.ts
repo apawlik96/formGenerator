@@ -1,10 +1,11 @@
 export class formStylesMultiStep  {
     constructor() {
+        this.generateStyles();
         this.addStyles();
     }
 
-    private addStyles(): void {
-        const styles = `
+    private generateStyles(): string {
+        return `
         body {
             font-family: Arial, sans-serif;
             background-color: #f4f4f4;
@@ -143,7 +144,11 @@ export class formStylesMultiStep  {
             color:white;
             background-color: #4caf50;
         }
-        `;
+        `
+    }
+
+    private addStyles(): void {
+        const styles = this.generateStyles();
 
         if (typeof document !== 'undefined') {
             var styleElement = document.createElement('style');

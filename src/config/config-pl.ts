@@ -1,4 +1,7 @@
-export const formConfigPl = {
+import { FormConfig } from "./config-interface";
+import { FormPageConfig } from "./config-interface";
+
+export const formConfigPl: FormConfig  = {
     language: "pl",
     error: [{
         class: 'error-phone',
@@ -89,7 +92,7 @@ export const formConfigPl = {
     ]
 };
 
-export const formPagesPl: { step: string; title: string; fields: string[]; element?: HTMLFormElement }[] = [
+export const formPagesPl: FormPageConfig[] = [
     { step: 'Etap 1', title: 'Dane osobowe', fields: ['Username', 'First Name', 'Last Name'] },
     { step: 'Etap 2', title: 'Dane kontaktowe', fields: ['Email', 'Phone'] },
     { step: 'Etap 3', title: 'Hasło i potwierdzenie', fields: ['Password', 'Confirm Password'] },

@@ -1,18 +1,17 @@
 import { FormElementCreation } from "../form-element-creator-strategy/form-element-creator";
 import { FormValidator } from "../validator";
-import { formStylesOneStep } from "../form-styles/form-styles-one-step";
 import { formCreator } from "../html-tag-name";
+import { FormConfig } from "../config/config-interface";
 
 export class FormHandlerOneStep {
-    config: any;
+    config: FormConfig;
     private formElementCreation: FormElementCreation;
     private formValidator: FormValidator;
 
-    constructor(config: any) {
+    constructor(config: FormConfig) {
         this.config = config;
         this.formElementCreation = new FormElementCreation();
         this.formValidator = new FormValidator(config); 
-        new formStylesOneStep();
     }
 
     createFormElement= async (): Promise<HTMLFormElement> => {

@@ -12,7 +12,7 @@ export class FormGeneratorOneStep {
         new formStylesOneStep();
     }
 
-    get formGenerator(): FormHandlerOneStep {
+    get formHandlerOneStep(): FormHandlerOneStep {
         return this._formHandler;
     }
 
@@ -33,7 +33,7 @@ formGeneratorOneStep.generateForm().then(form => {
     if (form) {
         form.addEventListener('submit', function (event: Event) {
             event.preventDefault();
-            formGeneratorOneStep.formGenerator.validateForm();
+            formGeneratorOneStep.formHandlerOneStep.validateForm();
         });
     } else {
             console.error('Form not found.')

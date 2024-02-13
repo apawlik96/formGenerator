@@ -1,10 +1,11 @@
 export class formStylesOneStep  {
     constructor() {
+        this.generateStyles();
         this.addStyles();
     }
 
-    private addStyles(): void {
-        const styles = `
+    private generateStyles(): string {
+        return`
         *{
             margin:0;
             padding:0;
@@ -149,8 +150,11 @@ export class formStylesOneStep  {
         .invalid-field {
             background-color: rgba(252, 196, 196, 0.8);
         }
+        `
+    }
 
-        `;
+    private addStyles(): void {
+        const styles = this.generateStyles();
 
         if (typeof document !== 'undefined') {
             var styleElement = document.createElement('style');
