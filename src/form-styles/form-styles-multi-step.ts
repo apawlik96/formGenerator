@@ -1,10 +1,11 @@
-export class formStyles  {
+export class formStylesMultiStep  {
     constructor() {
+        this.generateStyles();
         this.addStyles();
     }
 
-    private addStyles(): void {
-        const styles = `
+    private generateStyles(): string {
+        return `
         body {
             font-family: Arial, sans-serif;
             background-color: #f4f4f4;
@@ -21,49 +22,82 @@ export class formStyles  {
             padding: 20px;
             border-radius: 8px;
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-            width: 300px;
-        }
-    
-        .fields, .selects, .data, .buttons {
-            margin-bottom: 15px;
-        }
-    
-        div {
-            margin-bottom: 5px;
+            width: 400px;
+            text-align: center;
         }
     
         p {
-            margin-top: -17px;
+            font-family: 'Open Sans', sans-serif;
+            margin-top: -15px;
+            margin-left: 15px;
             margin-bottom: 10px;
             font-size: 10px;
+            color: #FF3333;
+            text-align: left;
         }
     
-        input:not([type="radio"]) {
+        input {
+            color:#8a8a8a;
             display: block;
-            width: 100%;
-            box-sizing: border-box;
-            padding: 8px;
-            margin-bottom: 20px;
+            width: 90%;
+            height: 30px;
+            padding: 5px 15px;
+            margin: 15px auto;
+            border:1px solid #ccc;
+            border-radius: 20px;
+            background-color: #fff;
+            font-family:'HelveticaNeue','Arial', sans-serif;
+        }
+
+        #divPhone {
+            display: flex;
+            align-items: center;
+            width: 98%;
+            margin: 10px auto;
+        }
+        
+        #phoneCountryCodeSelect {
+            flex: 1;
+            margin-right: 10px;
+        }
+        
+        input[name="Phone"] {
+            flex: 2;
+        }
+        
+        select {
+            color:#8a8a8a;
+            display: block;
+            width: 90%;
+            height: 30px;
+            padding: 5px 15px;
+            margin: 10px auto;
+            border:1px solid #ccc;
+            border-radius: 20px;
+            background-color: #fff;
+            font-family:'HelveticaNeue','Arial', sans-serif;
         }
     
-        input[type="radio"], label {
-            margin: 20px 5px;
-        }
-    
-        input[type="submit"], button {
+        button {
             background-color: #4caf50;
-            color: #fff;
-            font-size: 16px;
-            border-radius: 10px;
-            padding 10px;
-            width: 120px;
-            margin-left: auto;
-            margin-right: auto;
+            color: white;
+            padding: 10px 20px;
+            font-size: 15px;
+            text-decoration: uppercase;
+            margin: 10px;
+            border: none;
+            border-radius: 15px;
             cursor: pointer;
+            font-family:'HelveticaNeue','Arial', sans-serif;
         }
-    
-        input[type="submit"]:hover {
+        
+        button:hover {
             background-color: #45a049;
+        }
+
+
+        .invalid-field {
+            border: 1px solid #FF3333;
         }
 
         .step-indicator-wrapper {
@@ -110,7 +144,11 @@ export class formStyles  {
             color:white;
             background-color: #4caf50;
         }
-        `;
+        `
+    }
+
+    private addStyles(): void {
+        const styles = this.generateStyles();
 
         if (typeof document !== 'undefined') {
             var styleElement = document.createElement('style');

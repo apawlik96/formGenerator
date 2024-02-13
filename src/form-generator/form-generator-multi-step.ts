@@ -1,27 +1,29 @@
-import { ButtonCreation } from "./button-creation";
-import { FormElementCreation } from "./form-element-creator";
-import { formStyles } from "./form-styles";
-import { formPagesEn } from "./config";
-import { formConfigEn } from "./config";
-import { FormValidator } from "./validator";
-import { divCreator,formCreator,titleCreator } from "./html-tag-name";
+import { ButtonCreation } from "../form-element-creator/button-creation";
+import { FormElementCreation } from "../form-element-creator-strategy/form-element-creator";
+import { formStylesMultiStep } from "../form-styles/form-styles-multi-step";
+import { formPagesEn } from "../config/config-en";
+import { formConfigEn } from "../config/config-en";
+import { FormValidator } from "../validator";
+import { divCreator,formCreator,titleCreator } from "../html-tag-name";
+import { FormConfig } from "../config/config-interface";
+
 
 export class FormGeneratorMultiStep {
-    config: any;
+    config: FormConfig;
     formPages: any;
     currentPageIndex: number;
     private formElementCreation: FormElementCreation;
     private buttonCreation: ButtonCreation;
     private formValidator: FormValidator;
 
-    constructor(config: any, formPages: any) {
+    constructor(config: FormConfig, formPages: any) {
         this.config = config;
         this.formPages = formPages;
         this.currentPageIndex = 0;
         this.buttonCreation = new ButtonCreation();
         this.formElementCreation = new FormElementCreation();
         this.formValidator = new FormValidator (config);
-        new formStyles();
+        new formStylesMultiStep();
     }
 
     createStepIndicators(page: HTMLFormElement, step: number): void {
@@ -75,18 +77,27 @@ export class FormGeneratorMultiStep {
             await this.formElementCreation.create(form, element);
         }
         if (pageIndex > 0) {
-            const prevButton = this.buttonCreation.create(this.config.buttons.find((button: any)  => button.name === 'previous').value, () => this.showPreviousPage());
-            form.appendChild(prevButton);
+            const prevButton = this.config.buttons.find((button) => button.name === 'previous');
+            if (prevButton) {
+                const prevButtonElement = this.buttonCreation.create(prevButton.value, () => this.showPreviousPage());
+                form.appendChild(prevButtonElement);
+            }
         }
 
         switch (true) {
             case pageIndex === this.formPages.length - 1:
-                const submitButton = this.buttonCreation.create(this.config.buttons.find((button: any)  => button.name === 'submit').value, () => this.onSubmitButtonClick());
-                form.appendChild(submitButton);
+                const submitButton = this.config.buttons.find((button) => button.name === 'submit');
+                if (submitButton) {
+                    const submitButtonElement = this.buttonCreation.create(submitButton.value, () => this.onSubmitButtonClick());
+                    form.appendChild(submitButtonElement);
+                }
                 break;
             default:
-                const nextButton = this.buttonCreation.create(this.config.buttons.find((button: any)  => button.name === 'next').value, () => this.showNextPage());
-                form.appendChild(nextButton);
+                const nextButton = this.config.buttons.find((button) => button.name === 'next');
+                if (nextButton) {
+                    const nextButtonElement = this.buttonCreation.create(nextButton.value, () => this.showNextPage());
+                    form.appendChild(nextButtonElement);
+                }
                 break;
         }
         return form;
@@ -135,7 +146,7 @@ export class FormGeneratorMultiStep {
             container = divCreator;
             for (let index = 0; index < this.formPages.length; index++) {
                 const page = this.formPages[index];
-                const formPage = await this.createPage(page.step, page.fields, index);
+                const formPage = await this.createPage(page.title, page.fields, index);
                 formPage.style.display = index === 0 ? 'block' : 'none';
                 container.appendChild(formPage);
                 (this.formPages[index] as any).element = formPage;

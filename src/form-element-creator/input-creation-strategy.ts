@@ -1,5 +1,5 @@
-import { FormElementCreationStrategy } from "./form-element-creation-strategy-interface";
-import { inputCreator } from "./html-tag-name";
+import { FormElementCreationStrategy } from "../form-element-creator-strategy/form-element-creation-strategy-interface";
+import { inputCreator } from "../html-tag-name";
 
 export class InputCreationStrategy implements FormElementCreationStrategy {
     create(form: HTMLFormElement, element: any): void {

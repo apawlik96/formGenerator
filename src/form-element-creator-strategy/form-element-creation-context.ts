@@ -11,7 +11,7 @@ export class FormElementCreationContext implements FormElementCreationStrategy {
         this.creationStrategy = creationStrategy;
     }
 
-    create(form: HTMLFormElement, element: any): void {
+    async create(form: HTMLFormElement, element: any): Promise<void>{
         this.creationStrategy.create(form, element);
     }
 }
