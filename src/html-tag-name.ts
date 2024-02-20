@@ -9,4 +9,5 @@ export const inputCreator = elementCreator.createElement('input') as HTMLInputEl
 export const optionCreator = elementCreator.createElement('option') as HTMLOptionElement;
 export const titleCreator = elementCreator.createElement('h2') as HTMLElement;
 export const formCreator = elementCreator.createElement('form') as HTMLFormElement;
-export const labelCreator = elementCreator.createElement('label') as HTMLLabelElement;
+export const labelCreator = elementCreator.createElement('label') as HTMLFormElement;
+export const paragraphCreator = elementCreator.createElement('p') as HTMLElement;

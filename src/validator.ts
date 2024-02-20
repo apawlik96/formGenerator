@@ -10,15 +10,19 @@ export class FormValidator {
         return emailRegex.test(email);
     }
 
-    validationNumber(phoneNumber: string): any {
+    validationNumber(): any {
+        const phoneInput = document.querySelector('input[name="Phone"]') as HTMLInputElement;
+        const phoneInputValue = phoneInput.value;
         var selectElement = document.getElementById('phoneCountryCodeSelect') as HTMLSelectElement;
-            if (selectElement) {
-                var selectedOption = selectElement.options[selectElement.selectedIndex];
-                var selectedValue = selectedOption.value;
-                return phoneNumber.startsWith(selectedValue);
-            } else {
-                console.error("Select element not found!");
-            }
+        if (selectElement) {
+            var selectedOption = selectElement.options[selectElement.selectedIndex];
+            var selectedValue = selectedOption.value;
+            const phoneNumber = phoneInputValue.slice(selectedValue.length);
+            const phoneRegex = /^\d+$/;
+            return phoneRegex.test(phoneNumber);
+        } else {
+            console.error("Select element not found!");
+        }
     }
 
     arePasswordsMatching(): any {
@@ -77,7 +81,7 @@ export class FormValidator {
                     isValid = this.isEmailValid(inputElement.value.trim());
                     break;
                 case 'Phone':
-                    isValid = this.validationNumber(inputElement.value.trim());
+                    isValid = this.validationNumber();
                     break;
                 case 'Confirm Password':
                     isValid = this.arePasswordsMatching();
@@ -94,6 +98,13 @@ export class FormValidator {
 
         if (fieldConfig && fieldConfig.placeholder.includes('*') && inputElement.value.trim() === '') {
             isValid = false;
+            inputElement.style.borderBottom = '2px solid #e74c3c';
+            inputElement.classList.add('empty-effect');
+            inputElement.addEventListener('focus', () => inputElement.style.borderBottom = '');
+            inputElement.addEventListener('blur', () => this.addBorderBottomEffectOnBlur(inputElement));
+        } else {
+            inputElement.style.borderBottom = '';
+            inputElement.classList.remove('empty-effect');
         }
     
         const errorParagraphId = `${inputElement.name}-error`;
@@ -101,12 +112,15 @@ export class FormValidator {
     
         if (!isValid) {
             this.createErrorParagraph(validationError, inputElement);
-            inputElement.classList.add('invalid-field');
         } else {
             this.removeErrorParagraph(errorParagraph);
-            inputElement.classList.remove('invalid-field');
         }
-    
         return isValid;
+    }
+
+    addBorderBottomEffectOnBlur(inputElement: HTMLInputElement) {
+        if (inputElement.value.trim() === '') {
+            inputElement.style.borderBottom = '2px solid #e74c3c';
+        }
     }
 }

@@ -11,89 +11,131 @@ export const formConfigEn: FormConfig  = {
         digit: '1 digit',
         character: '1 special character'
     }],
+    empty: [{
+        class: 'empty',
+        className: 'required',
+        textContent: 'Fields with * are required',
+    }],
+    title: [{
+        class: 'title',
+        className: 'text',
+        textContent: 'Contact form',
+    }],
+    popup: [{
+        class: 'popup',
+        classNameContainer: 'popup-container',
+        classNameParagraph: 'success-message-paragraph',
+        textContent: 'Form submitted successfully!',
+    }],
     fields: [{
         class: 'fields',
+        className: 'input-data',
         name: 'Username',
         type: 'text',
-        placeholder: 'Enter Username*'
+        placeholder: 'Username*',
     },
     {
         class: 'fields',
+        className: 'input-data',
         name: 'First Name',
         type: 'text',
-        placeholder: 'Enter First Name'
+        placeholder: 'First Name'
     },
     {
         class: 'fields',
+        className: 'input-data',
         name: 'Last Name',
         type: 'text',
-        placeholder: 'Enter Last Name'
+        placeholder: 'Last Name'
     },
     {
         class: 'fields',
+        className: 'input-data',
         name: 'Email',
         type: 'email',
-        placeholder: 'Enter Email*',
+        placeholder: 'Email*',
         error: 'Invalid email address.'
     },
     {
         class: 'fields',
+        className: 'input-data',
+        diallingCode: 'Dialling Code',
         name: 'Phone',
         type: 'tel',
-        placeholder: 'Enter Phone*',
+        placeholder: 'Phone*',
         error: 'Invalid phone number.'
     },
     {
         class: 'fields',
+        className: 'input-data',
         name: 'Password',
         type: 'password',
-        placeholder: 'Enter Password*',
-        error: 'Passwords do not match.'
+        placeholder: 'Password*',
+        error: 'Password is not strong enough. Missing at least: '
     },
     {
         class: 'fields',
+        className: 'input-data',
         name: 'Confirm Password',
         type: 'password',
-        placeholder: 'Confirm Password',
-        error: 'Password is not strong enough. Missing at least '
-    },
-    ],
+        placeholder: 'Confirm Password*',
+        error: 'Passwords do not match.'
+    }],
     selects: [{
         class: 'selects',
+        className: 'input-data-gender',
+        classNameLabel: 'gender-label',
         type: 'radio',
         name: 'gender',
         for: 'Female'
     },
     {
         class: 'selects',
+        className: 'input-data-gender',
+        classNameLabel: 'gender-label',
         type: 'radio',
         name: 'gender',
         for: 'Male'
-    }
-    ],
+    }],
+    password: [{
+        class: 'showPass',
+        className: 'showPass',
+        type: 'checkbox',
+        textContent: 'Show password',
+        for: 'showPasswordCheckbox'
+    }],
     buttons: [{
         class: 'buttons',
+        className: 'button-container',
         name: 'submit',
         type: 'submit',
         value: 'Submit'
     },
     {
-        class: 'buttons-multi',
+        class: 'buttons',
+        className: 'button-container',
         name: 'previous',
         type: 'previous',
         value: 'Previous'
     },
     {
-        class: 'buttons-multi',
+        class: 'buttons',
+        className: 'button-container',
         name: 'next',
         type: 'next',
         value: 'Next'
-    }
-    ]
+    },
+    {
+        class: 'buttons',
+        className: 'button-container',
+        name: 'close',
+        type: 'close',
+        value: 'Close'
+    }]
 };
 
 export const formPagesEn: FormPageConfig[] = [
-    { step: 'Step 1', title: 'Personal Details', fields: ['Username', 'First Name', 'Last Name'] },
-    { step: 'Step 2', title: 'Contact Information', fields: ['Email', 'Phone'] },
-    { step: 'Step 3', title: 'Account Setup', fields: ['Password', 'Confirm Password'] },
+    { title: 'Personal Details', fields: ['Username', 'First Name', 'Last Name'] },
+    { title: 'Contact Information', fields: ['Email', 'Phone'] },
+    { title: 'Account Setup', fields: ['Password', 'Confirm Password'] },
 ];
