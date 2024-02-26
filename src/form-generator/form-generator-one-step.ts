@@ -1,4 +1,3 @@
-import { formConfigPl } from "../config/config-pl";
 import { formStylesOneStep } from "../form-styles/form-styles-one-step";
 import { formCreator } from "../html-tag-name";
 import { FormHandlerOneStep } from "./form-handler-one-step";
@@ -28,7 +27,8 @@ export class FormGeneratorOneStep {
     }
 }
 
-const formGeneratorOneStep = new FormGeneratorOneStep(new FormHandlerOneStep(formConfigPl));
+const formGeneratorOneStep = new FormGeneratorOneStep(new FormHandlerOneStep());
+
 formGeneratorOneStep.generateForm().then(form => {
     if (form) {
         form.addEventListener('submit', function (event: Event) {

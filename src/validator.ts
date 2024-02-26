@@ -1,9 +1,7 @@
-export class FormValidator {
-    config: any;
+import { classNames } from "./config/class-name";
+import { config } from "./config/config-attributes";
 
-    constructor(config: any) {
-        this.config = config;
-    }
+export class FormValidator {
 
     isEmailValid(email: string): boolean {
         const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -35,11 +33,11 @@ export class FormValidator {
 
     isStrongPassword(password: string): any {
         const requirements = [
-            { regex: /.{8,}/, message: this.config.error[0].characters },
-            { regex: /[A-Z]/, message: this.config.error[0].uppercase },
-            { regex: /[a-z]/, message: this.config.error[0].lowercase },
-            { regex: /\d/, message: this.config.error[0].digit },
-            { regex: /[!@#$%^&*(),.?":{}|<>]/, message: this.config.error[0].character },
+            { regex: /.{8,}/, message: config.error.characters },
+            { regex: /[A-Z]/, message: config.error.uppercase },
+            { regex: /[a-z]/, message: config.error.lowercase },
+            { regex: /\d/, message: config.error.digit },
+            { regex: /[!@#$%^&*(),.?":{}|<>]/, message: config.error.character },
         ];
         const missingSigns = requirements.filter(({ regex }) => !regex.test(password)).map(({ message }) => message);
         return missingSigns.join(', ');
@@ -52,7 +50,6 @@ export class FormValidator {
             errorParagraph = document.createElement('p');
             errorParagraph.id = errorParagraphId;
             errorParagraph.textContent = validationError;
-            errorParagraph.style.color = 'red';
             const inputElementNode = inputElement.parentNode as Node;
             inputElementNode.insertBefore(errorParagraph, inputElement.nextSibling);
         } else {
@@ -71,7 +68,7 @@ export class FormValidator {
     isValid(inputElement: HTMLInputElement): boolean {
         let isValid = true;
         let validationError = '';
-        const fieldConfig = this.config.fields.find((field: any) => field.name === inputElement.name);
+        const fieldConfig = config.fields.find((field: any) => field.name === inputElement.name);
     
         if (fieldConfig) {
             validationError = fieldConfig.error || '';
@@ -99,12 +96,12 @@ export class FormValidator {
         if (fieldConfig && fieldConfig.placeholder.includes('*') && inputElement.value.trim() === '') {
             isValid = false;
             inputElement.style.borderBottom = '2px solid #e74c3c';
-            inputElement.classList.add('empty-effect');
+            inputElement.classList.add(classNames.emptyEffect);
             inputElement.addEventListener('focus', () => inputElement.style.borderBottom = '');
             inputElement.addEventListener('blur', () => this.addBorderBottomEffectOnBlur(inputElement));
         } else {
             inputElement.style.borderBottom = '';
-            inputElement.classList.remove('empty-effect');
+            inputElement.classList.remove(classNames.emptyEffect);
         }
     
         const errorParagraphId = `${inputElement.name}-error`;

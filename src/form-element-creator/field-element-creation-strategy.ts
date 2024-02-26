@@ -1,14 +1,11 @@
 import { FormElementCreationStrategy } from "../form-element-creator-strategy/form-element-creation-strategy-interface";
 import { selectCreator, optionCreator, inputCreator, labelCreator } from "../html-tag-name";
 import { DivCreatorWithClassName } from "./div-creator";
+import { classNames } from "../config/class-name";
+import { config } from "../config/config-attributes";
 require('dotenv').config();
 
 export class FieldElementCreationStrategy implements FormElementCreationStrategy {
-    config: any;
-
-    constructor(config: any) {
-        this.config = config;
-    }
 
     private createInput(element: any): HTMLInputElement {
         const input = inputCreator;
@@ -24,8 +21,8 @@ export class FieldElementCreationStrategy implements FormElementCreationStrategy
         return label;
     }
 
-    private createInputFields(form: HTMLFormElement, element: any): HTMLDivElement  {
-        const divInputData = new DivCreatorWithClassName().createDiv(element.className);
+    private createInputField(form: HTMLFormElement, element: any): HTMLDivElement  {
+        const divInputData = new DivCreatorWithClassName().createDiv(classNames.inputData);
         const input = this.createInput(element);
         const label = this.createLabel(element);
         divInputData.appendChild(input);
@@ -35,55 +32,72 @@ export class FieldElementCreationStrategy implements FormElementCreationStrategy
     }
 
     private createPasswordInput(form: HTMLFormElement, element: any): void {
-        const divInputDataPass = new DivCreatorWithClassName().createDiv('input-data-pass');
-        const divInputData = new DivCreatorWithClassName().createDiv(element.className);
+        const divInputDataPass = new DivCreatorWithClassName().createDiv(classNames.inputDataPassword);
+        const divInputData = new DivCreatorWithClassName().createDiv(classNames.inputData);
         const input = this.createInput(element);
         divInputData.appendChild(input);
         const paragraph = this.createLabel(element);
         divInputData.appendChild(paragraph);
 
-        const showPass = new DivCreatorWithClassName().createDiv(this.config.password[0].className);
+        const showPass = this.createShowPasswordInput(input);
+
+        divInputDataPass.appendChild(divInputData);
+        divInputDataPass.appendChild(showPass);
+
+        form.appendChild(divInputDataPass);
+    }
+
+    private createShowPasswordInput(input: any): void {
+        const showPass = new DivCreatorWithClassName().createDiv(classNames.showPassword);
 
         const inputShowPass = inputCreator;
-        inputShowPass.type = this.config.password[0].type;
+        inputShowPass.type = config.password.type;
         showPass.appendChild(inputShowPass);
 
         const label = labelCreator;
-        label.textContent = this.config.password[0].textContent;
-        label.for = this.config.password[0].for;
+        label.textContent = config.password.textContent;
+        label.for = config.password.for;
 
         showPass.appendChild(label);
-        divInputDataPass.appendChild(divInputData);
-        divInputDataPass.appendChild(showPass);
 
         inputShowPass.addEventListener('change', () => {
             input.type = inputShowPass.checked ? 'text' : 'password';
         });
 
-        form.appendChild(divInputDataPass);
+        return showPass;
     }
 
     private async createPhoneInput(form: HTMLFormElement, element: any): Promise<void> {
-        const divInputDataPhone  = new DivCreatorWithClassName().createDiv('input-data-phone');
-        const inputGroupPhone = new DivCreatorWithClassName().createDiv('input-group');
+        const divInputDataPhone  = new DivCreatorWithClassName().createDiv(classNames.inputDataPhone);
+        const inputGroupPhone = new DivCreatorWithClassName().createDiv(classNames.inputGroup);
 
         const select = selectCreator;
-        select.id = 'phoneCountryCodeSelect';
+        select.id = classNames.phoneCountryCodeSelect;
 
         const optionTitle = optionCreator;
-        optionTitle.text = this.config.fields.find((field: any) => field.name === 'Phone').diallingCode;
-        optionTitle.value = '';
-        optionTitle.disabled = true;
-        optionTitle.selected = true;
-        select.appendChild(optionTitle);
+        const diallingCodeParagraph = config.fields.find((field: any) => field.name === 'Phone');
+        if (diallingCodeParagraph) {
+            optionTitle.text = diallingCodeParagraph.diallingCode;
+            optionTitle.value = '';
+            optionTitle.disabled = true;
+            optionTitle.selected = true;
+            select.appendChild(optionTitle);
+        }
 
         await this.createCountryOptions(select);
         inputGroupPhone.appendChild(select);
 
-        const divInputData = this.createInputFields(form, element);
+        const divInputData = this.createInputField(form, element);
 
         inputGroupPhone.appendChild(divInputData);
         divInputDataPhone.appendChild(inputGroupPhone);
+
+        this.addSelectChangeEvent(select, divInputData);
+
+        form.appendChild(divInputDataPhone);
+    }
+
+    private addSelectChangeEvent(select: HTMLSelectElement, divInputData: HTMLDivElement): void {
         select.addEventListener('change', () => {
             const selectedOption = select.options[select.selectedIndex];
             const inputField = divInputData.querySelector('input') as HTMLInputElement;
@@ -91,7 +105,6 @@ export class FieldElementCreationStrategy implements FormElementCreationStrategy
                 inputField.value = selectedOption.value;
             }
         });
-        form.appendChild(divInputDataPhone);
     }
 
     private async createCountryOptions(select: HTMLSelectElement) {
@@ -125,7 +138,7 @@ export class FieldElementCreationStrategy implements FormElementCreationStrategy
                 this.createPasswordInput(form, element);
                 break;
             default:
-                this.createInputFields(form, element);
+                this.createInputField(form, element);
                 return;
         }
     }

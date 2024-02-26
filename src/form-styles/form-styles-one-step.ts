@@ -53,7 +53,7 @@ export class formStylesOneStep  {
             margin: 32px 0;
         }
 
-        .form-page{
+        .personal-data-form{
             min-height: 400px;
         }
 

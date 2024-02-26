@@ -1,17 +1,15 @@
 import { ButtonCreation } from "../form-element-creator/button-creation";
 import { FormElementCreation } from "../form-element-creator-strategy/form-element-creator";
 import { formStylesOneStep } from "../form-styles/form-styles-one-step";
-import { formPagesEn } from "../config/config-en";
-import { formConfigEn } from "../config/config-en";
 import { FormValidator } from "../validator";
-import { divCreator, formCreator, titleCreator } from "../html-tag-name";
-import { FormConfig } from "../config/config-interface";
+import { formCreator, titleCreator } from "../html-tag-name";
 import { DivCreatorWithClassName } from "../form-element-creator/div-creator";
 import { FormSuccessMessage } from "../form-element-creator/form-success-message";
 import { FormRequiredFieldsParagraph } from "../form-element-creator/form-required-fields-parapraph";
+import { classNames } from "../config/class-name";
+import { config, formPages } from "../config/config-attributes";
 
 export class FormGeneratorMultiStep {
-    config: FormConfig;
     formPages: any;
     currentPageIndex: number;
     private formElementCreation: FormElementCreation;
@@ -20,112 +18,125 @@ export class FormGeneratorMultiStep {
     private formSuccessMessage: FormSuccessMessage;
     private formRequiredFieldsParagraph: FormRequiredFieldsParagraph;
 
-    constructor(config: FormConfig, formPages: any) {
-        this.config = config;
+    constructor(formPages: any) {
         this.formPages = formPages;
         this.currentPageIndex = 0;
         this.buttonCreation = new ButtonCreation();
-        this.formElementCreation = new FormElementCreation(this.config);
-        this.formValidator = new FormValidator(config);
-        this.formSuccessMessage = new FormSuccessMessage(this.config);
-        this.formRequiredFieldsParagraph = new FormRequiredFieldsParagraph(this.config);
-        new formStylesOneStep();
+        this.formElementCreation = new FormElementCreation();
+        this.formValidator = new FormValidator();
+        this.formSuccessMessage = new FormSuccessMessage();
+        this.formRequiredFieldsParagraph = new FormRequiredFieldsParagraph();
     }
 
-    createStepIndicators(page: HTMLFormElement, step: number): void {
-        const stepIndicatorContainer = divCreator;
-        stepIndicatorContainer.className = 'step-indicator-container-top';
-        page.insertBefore(stepIndicatorContainer, page.firstChild);
-        for (let i = 1; i <= this.formPages.length; i++) {
-            const stepIndicatorWrapper = divCreator;
-            stepIndicatorWrapper.className = 'step-indicator-wrapper';
-            stepIndicatorContainer.appendChild(stepIndicatorWrapper);
+    createStepIndicators(step: number, stepIndicatorContainerTop: HTMLDivElement): void {
+        const stepIndicatorWrapper = new DivCreatorWithClassName().createDiv(classNames.stepIndicatorWrapper);
+        stepIndicatorContainerTop.appendChild(stepIndicatorWrapper);
 
-            const stepIndicator = divCreator;
-            stepIndicator.className = 'step-indicator';
-            stepIndicator.textContent = i.toString();
-            stepIndicatorContainer.appendChild(stepIndicator);
+        const stepIndicator = new DivCreatorWithClassName().createDiv(classNames.stepIndicator);
+        stepIndicator.textContent = step.toString();
+        stepIndicatorWrapper.appendChild(stepIndicator);
+    
+        const title = new DivCreatorWithClassName().createDiv(classNames.titleStep);
+        title.textContent = this.formPages[step - 1].title;
+        stepIndicatorWrapper.appendChild(title);
 
-            const title = titleCreator;
-            title.className = 'step-title';
-            title.textContent = this.formPages[i - 1].title;
-            stepIndicatorWrapper.appendChild(title);
-
-            if (i < step) {
-                stepIndicator.classList.add('green-line');
-            }
+        if (step < this.formPages.length) {
+            const line = new DivCreatorWithClassName().createDiv(classNames.stepIndicatorLine);
+            stepIndicatorContainerTop.appendChild(line);
         }
 
-        const stepIndicators = stepIndicatorContainer.querySelectorAll('.step-indicator');
-        const stepIndicatorWrapper = stepIndicatorContainer.querySelectorAll('.step-indicator-wrapper');
+        stepIndicator.classList.add(step === 1 ? classNames.currentStep : undefined);
+    }
 
-        for (let i = 0; i < stepIndicators.length - 1; i++) {
-            const line = new DivCreatorWithClassName().createDiv('step-indicator-line');
-            stepIndicatorContainer.insertBefore(line, stepIndicatorWrapper[i + 1]);
+    updateStepIndicatorColors(): void {
+        const stepIndicatorContainerTop = document.querySelector(`.${classNames.stepIndicatorContainer}`) as HTMLDivElement;
+    
+        if (stepIndicatorContainerTop) {
+            const stepIndicators = stepIndicatorContainerTop.querySelectorAll(`.${classNames.stepIndicator}`);
+            const stepLines = stepIndicatorContainerTop.querySelectorAll(`.${classNames.stepIndicatorLine}`);
+    
+            stepIndicators.forEach((indicator, index) => {
+                if (index < this.currentPageIndex) {
+                    indicator.classList.add('green-line');
+                } else {
+                    indicator.classList.remove('green-line');
+                }
 
-            if (i < step - 1) {
-                line.classList.add('green-line');
-            }
+                indicator.classList.remove('current-step');
+                if (index === this.currentPageIndex) {
+                    indicator.classList.add('current-step');
+                }
+            });
+
+            stepLines.forEach((line, index) => {
+                if (index < this.currentPageIndex) {
+                    line.classList.add('green-line');
+                } else {
+                    line.classList.remove('green-line');
+                }
+            });
+
         }
-
-        stepIndicators[step - 1].classList.add('current-step');
     }
 
     createPage = async (title: string, fields: string[]) => {
         const form = formCreator;
-        form.className = 'form-page';
+        form.className = classNames.personalDataForm;
 
         const pageTitle = titleCreator;
         pageTitle.textContent = title;
         form.appendChild(pageTitle);
 
         for (const fieldName of fields) {
-            const element = this.config.fields.find((field: any) => field.name === fieldName);
+            const element = config.fields.find((field: any) => field.name === fieldName);
             await this.formElementCreation.create(form, element);
         }
         return form;
     }
 
-    createButtons = (pageIndex: number): void => {
-        const buttonContainerConfig = this.config.buttons.find((button: any) => button.name === 'submit');
+    createButtons(pageIndex: number): HTMLDivElement {
+        const buttonContainer = new DivCreatorWithClassName().createDiv(classNames.buttonContainer);
+    
+        if (pageIndex > 0) {
+            const prevButton = this.createPreviousButton();
+            buttonContainer.appendChild(prevButton);
+        }
+    
+        if (pageIndex === this.formPages.length - 1) {
+            const submitButton = this.createSubmitButton();
+            buttonContainer.appendChild(submitButton);
+        } else {
+            const nextButton = this.createNextButton();
+            buttonContainer.appendChild(nextButton);
+        }
+    
+        return buttonContainer;
+    }
 
-        if (buttonContainerConfig) {
-            const buttonContainer = new DivCreatorWithClassName().createDiv(buttonContainerConfig.className);
-    
-            if (pageIndex > 0) {
-                const prevButtonConfig = this.config.buttons.find((button: any) => button.name === 'previous');
-                if (prevButtonConfig) {
-                    const prevButton = this.buttonCreation.create(prevButtonConfig.value, () => this.showPreviousPage());
-                    prevButton.id = 'previous-button';
-                    if (buttonContainer) {
-                        buttonContainer.appendChild(prevButton);
-                    }
-                }
-            }
-    
-            switch (true) {
-                case pageIndex === this.formPages.length - 1:
-                    const submitButtonConfig = this.config.buttons.find((button: any) => button.name === 'submit');
-                    if (submitButtonConfig) {
-                        const submitButton = this.buttonCreation.create(submitButtonConfig.value, () => this.onSubmitButtonClick());
-                        submitButton.id = 'next-button';
-                        if (buttonContainer) {
-                            buttonContainer.appendChild(submitButton);
-                        }
-                    }
-                    break;
-                default:
-                    const nextButtonConfig = this.config.buttons.find((button: any) => button.name === 'next');
-                    if (nextButtonConfig) {
-                        const nextButton = this.buttonCreation.create(nextButtonConfig.value, () => this.showNextPage());
-                        nextButton.id = 'next-button';
-                        if (buttonContainer) {
-                            buttonContainer.appendChild(nextButton);
-                        }
-                    }
-                    break;
-            }
-            return buttonContainer;
+    private createPreviousButton = (): any => {
+        const prevButtonConfig = config.buttons.find((button: any) => button.name === 'previous')
+        if (prevButtonConfig){
+            const prevButton = this.buttonCreation.create(prevButtonConfig.value, () => this.showPreviousPage());
+            prevButton.id = classNames.previousButton;
+            return prevButton;
+        }
+    }
+
+    private createNextButton = (): any => {
+        const nextButtonConfig = config.buttons.find((button: any) => button.name === 'next')
+        if (nextButtonConfig){
+            const nextButton = this.buttonCreation.create(nextButtonConfig.value, () => this.showNextPage());
+            nextButton.id = classNames.nextButton;
+            return nextButton;
+        }
+    }
+
+    private createSubmitButton = (): any => {
+        const submitButtonConfig = config.buttons.find((button: any) => button.name === 'submit')
+        if (submitButtonConfig){
+            const submitButton = this.buttonCreation.create(submitButtonConfig.value, () => this.onSubmitButtonClick());
+            submitButton.id = classNames.nextButton;
+            return submitButton;
         }
     }
 
@@ -142,19 +153,45 @@ export class FormGeneratorMultiStep {
         return true;
     }
 
+    transitionBetweenPages(currentElement: any, nextElement: any): void {
+        currentElement.style.transition = `opacity 0.5s ease-out`;
+        currentElement.style.opacity = '0';
+
+        nextElement.style.transition = `opacity 0.5s ease-in`;
+        nextElement.style.opacity = '1';
+
+        setTimeout(() => {
+            currentElement.style.display = 'none';
+            nextElement.style.display = 'block';
+
+            currentElement.style.transition = '';
+            currentElement.style.opacity = '';
+            nextElement.style.transition = '';
+            nextElement.style.opacity = '';
+        }, 500);
+    }
+
     showPreviousPage(): void {
         if (this.currentPageIndex > 0) {
-            (this.formPages[this.currentPageIndex] as any).element.style.display = 'none';
+            const currentElement = (this.formPages[this.currentPageIndex] as any).element;
+            const previousElement = (this.formPages[this.currentPageIndex - 1] as any).element;
+    
+            this.transitionBetweenPages(currentElement, previousElement);
+            
             this.currentPageIndex--;
-            (this.formPages[this.currentPageIndex] as any).element.style.display = 'block';
+            this.updateStepIndicatorColors();
         }
     }
 
     showNextPage(): void {
         if (this.currentPageIndex < this.formPages.length - 1 && this.validateCurrentPage()) {
-            (this.formPages[this.currentPageIndex] as any).element.style.display = 'none';
+            const currentElement = (this.formPages[this.currentPageIndex] as any).element;
+            const nextElement = (this.formPages[this.currentPageIndex + 1] as any).element;
+    
+            this.transitionBetweenPages(currentElement, nextElement);
+    
             this.currentPageIndex++;
-            (this.formPages[this.currentPageIndex] as any).element.style.display = 'block';
+            this.updateStepIndicatorColors();
         }
     }
 
@@ -168,21 +205,28 @@ export class FormGeneratorMultiStep {
     }
 
     generateForm = async (): Promise<HTMLDivElement | undefined> => {
-        const container = new DivCreatorWithClassName().createDiv('container');
+        const container = new DivCreatorWithClassName().createDiv(classNames.container);
+        const stepIndicatorContainerTop = new DivCreatorWithClassName().createDiv(classNames.stepIndicatorContainer);
+        container.appendChild(stepIndicatorContainerTop);
+
+        const formContainer = new DivCreatorWithClassName().createDiv(classNames.formContainer);
+
         for (let index = 0; index < this.formPages.length; index++) {
             const page = this.formPages[index];
-            const formPage = new DivCreatorWithClassName().createDiv('container-form-page');
+            const formPage = new DivCreatorWithClassName().createDiv(classNames.formStep);
             const inputElement = await this.createPage(page.title, page.fields);
             formPage.style.display = index === 0 ? 'block' : 'none';
-            formPage.appendChild(inputElement)
+            formPage.appendChild(inputElement);
 
             const buttonContainer = this.createButtons(index);
             formPage.appendChild(buttonContainer);
 
             (this.formPages[index] as any).element = formPage;
-            this.createStepIndicators(inputElement, index + 1);
+            this.createStepIndicators(index + 1, stepIndicatorContainerTop);
 
-            container.appendChild(formPage)
+            formContainer.appendChild(formPage);
+            container.appendChild(formContainer);
+
         }
 
         const requiredParagraph = this.formRequiredFieldsParagraph.createParagraphRequiredFields();
@@ -191,11 +235,12 @@ export class FormGeneratorMultiStep {
     }
 }
 
-const formGenerator = new FormGeneratorMultiStep(formConfigEn, formPagesEn);
+const formGenerator = new FormGeneratorMultiStep(formPages);
 
 formGenerator.generateForm().then(form => {
     if (form) {
         document.body.appendChild(form);
+        new formStylesOneStep();
         form.addEventListener('submit', function (event) {
             event.preventDefault();
         });
