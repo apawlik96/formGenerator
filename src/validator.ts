@@ -65,6 +65,46 @@ export class FormValidator {
         }
     }
 
+    clearExistingError(inputElement: HTMLInputElement): void {
+        const errorParagraphId = `${inputElement.name}-error`;
+        const errorParagraph = document.getElementById(errorParagraphId) as HTMLParagraphElement;
+
+        this.removeErrorParagraph(errorParagraph);
+    }
+
+    validateForm(inputElements: NodeListOf<Element>): boolean {
+        let isFormValid = true;
+
+        Array.from(inputElements).forEach((inputElement) => {
+            this.clearExistingError(inputElement as HTMLInputElement);
+
+            const isValid = this.isValid(inputElement as HTMLInputElement);
+
+            if (!isValid) {
+                isFormValid = false;
+            }
+        });
+
+        return isFormValid;
+    }
+
+    validateCurrentPage(currentPage: any): boolean {
+        const form = currentPage.element as HTMLFormElement;
+        const inputElements = form.querySelectorAll('input, select');
+        const inputArray = Array.from(inputElements);
+        let isFormValid = true;
+
+        for (const inputElement of inputArray) {
+            this.clearExistingError(inputElement as HTMLInputElement);
+
+            if (!this.isValid(inputElement as HTMLInputElement)) {
+                isFormValid = false;
+            }
+        }
+
+        return isFormValid;
+    }
+
     isValid(inputElement: HTMLInputElement): boolean {
         let isValid = true;
         let validationError = '';

@@ -57,12 +57,7 @@ export class FormHandlerOneStep {
     validateForm = (): boolean => {
         const form = document.querySelector('form') as HTMLFormElement;
         const inputElements = form.querySelectorAll('input, select');
-        const inputArray = Array.from(inputElements);
-        for (const inputElement of inputArray) {
-            if (!this.formValidator.isValid(inputElement as HTMLInputElement)) {
-                return false;
-            }
-        }
-        return true;
+
+        return this.formValidator.validateForm(inputElements);
     }
 }

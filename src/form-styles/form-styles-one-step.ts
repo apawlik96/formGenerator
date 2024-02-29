@@ -1,5 +1,12 @@
 export class formStylesOneStep  {
+    private firstColor: string;
+    private secondColor: string;
+    private thirdColor: string;
+
     constructor() {
+        this.firstColor = '#3498db';
+        this.secondColor = '#56d8e4';
+        this.thirdColor = '#2980b9';
         this.generateStyles();
         this.addStyles();
     }
@@ -23,7 +30,7 @@ export class formStylesOneStep  {
             min-height: 100vh;
             padding: 10px;
             font-family: 'Poppins', sans-serif;
-            background: linear-gradient(115deg, #56d8e4 10%, #9f01ea 90%);
+            background: linear-gradient(115deg, ${this.secondColor} 10%, ${this.thirdColor} 90%);
         }
 
         .container {
@@ -40,7 +47,7 @@ export class formStylesOneStep  {
             font-size: 41px;
             font-weight: 600;
             font-family: 'Poppins', sans-serif;
-            background: -webkit-linear-gradient(right, #56d8e4, #9f01ea, #56d8e4, #9f01ea);
+            background: -webkit-linear-gradient(right, ${this.secondColor}, #9f01ea, ${this.secondColor}, #9f01ea);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
         }
@@ -85,7 +92,7 @@ export class formStylesOneStep  {
             width: 16px;
             height: 16px;
             border-radius: 50%;
-            border: 2px solid #3498db;
+            border: 2px solid ${this.firstColor};
             outline: none;
             cursor: pointer;
             position: relative;
@@ -93,7 +100,7 @@ export class formStylesOneStep  {
         }
         
         .input-data-gender input[type="radio"]:checked {
-            background-color: #3498db;
+            background-color: ${this.firstColor};
         }
         
         .input-data-gender input[type="radio"]::before {
@@ -124,14 +131,14 @@ export class formStylesOneStep  {
 
         .input-data input:focus,
         .input-data input:not(:placeholder-shown) {
-            border-bottom: 2px solid #3498db;
+            border-bottom: 2px solid ${this.firstColor};
         }
 
         .input-data input:focus~label,
         .input-data input:not(:placeholder-shown)~label {
             transform: translateY(-20px);
             font-size: 14px;
-            color: #3498db;
+            color: ${this.firstColor};
         }
 
         .input-data input:placeholder-shown~label {
@@ -177,8 +184,8 @@ export class formStylesOneStep  {
             -webkit-appearance: none;
             -moz-appearance: none;
             background-image:
-                linear-gradient(45deg, transparent 50%, #56d8e4 50%),
-                linear-gradient(135deg, #56d8e4 50%, transparent 50%),
+                linear-gradient(45deg, transparent 50%, ${this.secondColor} 50%),
+                linear-gradient(135deg, ${this.secondColor} 50%, transparent 50%),
                 linear-gradient(to right, #ccc, #ccc);
             background-position:
                 calc(100% - 20px) calc(1em + 2px),
@@ -197,8 +204,8 @@ export class formStylesOneStep  {
 
         select:focus {
             background-image:
-                linear-gradient(45deg, #56d8e4 50%, transparent 50%),
-                linear-gradient(135deg, transparent 50%, #56d8e4 50%),
+                linear-gradient(45deg, ${this.secondColor} 50%, transparent 50%),
+                linear-gradient(135deg, transparent 50%, ${this.secondColor} 50%),
                 linear-gradient(to right, #ccc, #ccc);
             background-position:
                 calc(100% - 15px) 1em,
@@ -210,7 +217,7 @@ export class formStylesOneStep  {
                 1px 1.5em;
             background-repeat: no-repeat;
             outline: 0;
-            box-shadow: 0 0 5px rgba(52, 152, 219, 0.5);
+            box-shadow: 0 0 5px ${this.firstColor};
         }
 
         .input-data-pass {
@@ -236,14 +243,14 @@ export class formStylesOneStep  {
             width: 14px;
             height: 14px;
             border-radius: 50%;
-            border: 2px solid #3498db;
+            border: 2px solid ${this.firstColor};
             outline: none;
             cursor: pointer;
             position: relative;
         }
 
         .input-data-pass input[type="checkbox"]:checked {
-            background-color: #3498db;
+            background-color: ${this.firstColor};
         }
 
         .input-data-pass input[type="checkbox"]::before {
@@ -301,7 +308,7 @@ export class formStylesOneStep  {
         }
 
         button {
-            background-color: #3498db;
+            background-color: ${this.firstColor};
             color: #fff;
             font-size: 20px;
             font-weight: 100;
@@ -316,7 +323,7 @@ export class formStylesOneStep  {
         }
 
         button:hover {
-            background-color: #2980b9;
+            background-color: ${this.thirdColor};
         }
 
         h2{
@@ -324,7 +331,7 @@ export class formStylesOneStep  {
             font-size: 35px;
             font-weight: 600;
             font-family: 'Poppins', sans-serif;
-            background: -webkit-linear-gradient(right, #56d8e4, #9f01ea, #56d8e4, #9f01ea);
+            background: -webkit-linear-gradient(right, ${this.secondColor}, ${this.thirdColor}, ${this.secondColor}, ${this.thirdColor});
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
         }
@@ -358,8 +365,8 @@ export class formStylesOneStep  {
             transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
         }
 
-        .step-indicator.green-line {
-            background-color: #3498db;
+        .step-indicator.green-indicator {
+            background-color: ${this.firstColor};
         }
 
         .step-indicator-line {
@@ -370,7 +377,8 @@ export class formStylesOneStep  {
         }
 
         .step-indicator-line.green-line {
-            background-color: #3498db;
+            background-color: ${this.firstColor};
+            transition: background-color 2s ease;
         }
 
         .step-title {
@@ -379,7 +387,7 @@ export class formStylesOneStep  {
         }
 
         .current-step {
-            background-color: #3498db;
+            background-color: ${this.firstColor};
             width: 35px;
             height: 35px; 
             font-size: 16px;
@@ -429,7 +437,7 @@ export class formStylesOneStep  {
         }
 
         .success-message-paragraph {
-            color: #3498db;
+            color: ${this.firstColor};
             font-size: 30px;
             margin-bottom: 15px;
             font-weight: bold;

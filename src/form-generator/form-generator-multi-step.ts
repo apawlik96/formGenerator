@@ -57,9 +57,11 @@ export class FormGeneratorMultiStep {
     
             stepIndicators.forEach((indicator, index) => {
                 if (index < this.currentPageIndex) {
-                    indicator.classList.add('green-line');
+                    indicator.classList.add('green-indicator');
+                    indicator.textContent = '✓';
                 } else {
-                    indicator.classList.remove('green-line');
+                    indicator.classList.remove('green-indicator');
+                    indicator.textContent = (index + 1).toString();
                 }
 
                 indicator.classList.remove('current-step');
@@ -142,15 +144,7 @@ export class FormGeneratorMultiStep {
 
     validateCurrentPage(): boolean {
         const currentPage = this.formPages[this.currentPageIndex];
-        const form = currentPage.element as HTMLFormElement;
-        const inputElements = form.querySelectorAll('input, select');
-        const inputArray = Array.from(inputElements);
-        for (const inputElement of inputArray) {
-            if (!this.formValidator.isValid(inputElement as HTMLInputElement)) {
-                return false;
-            }
-        }
-        return true;
+        return this.formValidator.validateCurrentPage(currentPage);
     }
 
     transitionBetweenPages(currentElement: any, nextElement: any): void {
