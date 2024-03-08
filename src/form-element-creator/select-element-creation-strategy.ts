@@ -1,18 +1,21 @@
 import { FormElementCreationStrategy } from "../form-element-creator-strategy/form-element-creation-strategy-interface";
-import { InputCreationStrategy } from "./input-creation-strategy";
-import { labelCreator } from "../html-tag-name";
+import { DivCreatorWithClassName } from "./div-creator";
+import { inputCreator, labelCreator } from "../html-tag-name";
+import { classNames } from "../config/class-name";
 
 export class SelectElementCreationStrategy implements FormElementCreationStrategy {
-    private inputCreationStrategy: InputCreationStrategy;
-
-    constructor(inputCreationStrategy: InputCreationStrategy) {
-        this.inputCreationStrategy = inputCreationStrategy;
-    }
 
     create(form: HTMLFormElement, element: any): void {
+        const div = new DivCreatorWithClassName().createDiv(classNames.inputDataGender);
+        const input = inputCreator;
+        input.type = element.type;
+        input.name = element.name;
         const label = labelCreator;
         label.textContent = element.for;
-        this.inputCreationStrategy.create(form, element);
-        form.appendChild(label);
+        label.className = element.classNameLabel;
+
+        div.appendChild(input);
+        div.appendChild(label);
+        form.appendChild(div);
     }
 }

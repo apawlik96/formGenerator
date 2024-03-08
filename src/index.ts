@@ -1,5 +1,7 @@
-export {formConfigEn, formPagesEn} from './config/config-en';
-export {formConfigPl, formPagesPl} from './config/config-pl';
+export {translationsEn} from './config/config-en';
+export {translationsPl} from './config/config-pl';
+export {propertiesConfig, formPages} from './config/config-attributes';
+export {classNames} from './config/class-name';
 export {ElementCreator} from './form-element-creator/element-creator';
 export {FormElementCreationStrategy} from "./form-element-creator-strategy/form-element-creation-strategy-interface";
 export {FormElementCreation} from './form-element-creator-strategy/form-element-creator';

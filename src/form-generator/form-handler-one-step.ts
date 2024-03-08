@@ -1,37 +1,63 @@
 import { FormElementCreation } from "../form-element-creator-strategy/form-element-creator";
 import { FormValidator } from "../validator";
 import { formCreator } from "../html-tag-name";
-import { FormConfig } from "../config/config-interface";
+import { FormSuccessMessage } from "../form-element-creator/form-success-message";
+import { FormRequiredFieldsParagraph } from "../form-element-creator/form-required-fields-parapraph";
+import { DivCreatorWithClassName } from "../form-element-creator/div-creator";
+import { ButtonCreation } from "../form-element-creator/button-creation";
+import { classNames } from "../config/class-name";
+import { config } from "../config/config-attributes";
 
 export class FormHandlerOneStep {
-    config: FormConfig;
     private formElementCreation: FormElementCreation;
     private formValidator: FormValidator;
+    private formSuccessMessage: FormSuccessMessage;
+    private formRequiredFieldsParagraph: FormRequiredFieldsParagraph;
 
-    constructor(config: FormConfig) {
-        this.config = config;
+    constructor() {
         this.formElementCreation = new FormElementCreation();
-        this.formValidator = new FormValidator(config); 
+        this.formValidator = new FormValidator();
+        this.formSuccessMessage = new FormSuccessMessage();
+        this.formRequiredFieldsParagraph = new FormRequiredFieldsParagraph();
     }
 
-    createFormElement= async (): Promise<HTMLFormElement> => {
+    createFormElement = async (): Promise<HTMLDivElement> => {
+        const container = new DivCreatorWithClassName().createDiv(classNames.container);
+        const title = new DivCreatorWithClassName().createDiv(classNames.titleOneStep);
+        title.textContent = config.titleOneStep.textContent;
+
         const form = formCreator;
-        const elements = [...this.config.selects, ...this.config.fields, ...this.config.buttons];
+        const elements = [...config.selects, ...config.fields];
+
         for (const element of elements) {
             await this.formElementCreation.create(form, element);
         }
-        return form;
+
+        container.appendChild(title);
+        container.appendChild(form);
+
+        const containerButton = new DivCreatorWithClassName().createDiv(classNames.buttonContainer);
+        const submitButton = config.buttons.find((button) => button.name === 'submit');
+        if (submitButton) {
+            const submitButtonElement = new ButtonCreation().create(submitButton.value, async () => {
+                if (this.validateForm()) {
+                    const successMessage = this.formSuccessMessage.showSuccessMessage();
+                    container.appendChild(successMessage);
+                }
+            })
+            containerButton.appendChild(submitButtonElement);
+        };
+        container.appendChild(containerButton);
+
+        const requiredParagraph = this.formRequiredFieldsParagraph.createParagraphRequiredFields();
+        container.appendChild(requiredParagraph);
+        return container;
     }
 
     validateForm = (): boolean => {
         const form = document.querySelector('form') as HTMLFormElement;
         const inputElements = form.querySelectorAll('input, select');
-        const inputArray = Array.from(inputElements);
-        for (const inputElement of inputArray) {
-            if (!this.formValidator.isValid(inputElement as HTMLInputElement)) {
-                return false;
-            }
-        }
-        return true;
+
+        return this.formValidator.validateForm(inputElements);
     }
 }

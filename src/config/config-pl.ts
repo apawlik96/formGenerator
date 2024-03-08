@@ -1,99 +1,51 @@
-import { FormConfig } from "./config-interface";
-import { FormPageConfig } from "./config-interface";
+import { Translations } from "./translations-interface";
 
-export const formConfigPl: FormConfig  = {
-    language: "pl",
-    error: [{
-        class: 'error-phone',
+export const translationsPl: Translations = {
+    error: {
         characters: '8 znaków',
         uppercase: 'dużej litery',
         lowercase: 'małej litery',
         digit: 'cyfry',
         character: 'znaku specjalnego'
-    }],
-    fields: [{
-        class: 'fields',
-        name: 'Username',
-        type: 'text',
-        placeholder: 'Nazwa użytkownika*',
     },
-    {
-        class: 'fields',
-        name: 'First Name',
-        type: 'text',
-        placeholder: 'Imię'
+    empty: {
+        textContent: 'Pola z * są wymagane',
     },
-    {
-        class: 'fields',
-        name: 'Last Name',
-        type: 'text',
-        placeholder: 'Nazwisko'
+    titleOneStep: {
+        textContent: 'Formularz kontaktowy',
     },
-    {
-        class: 'fields',
-        name: 'Email',
-        type: 'email',
-        placeholder: 'Email*',
-        error: 'Nieprawidłowy adres e-mail.'
+    titleMultiStep: {
+        step1: 'Dane osobowe',
+        step2: 'Dane kontaktowe',
+        step3: 'Hasło i potwierdzenie'
     },
-    {
-        class: 'fields',
-        name: 'Phone',
-        type: 'tel',
-        placeholder: 'Numer telefonu*',
-        error: 'Nieprawidłowy numer telefonu.'
+    popup: {
+        textContent: 'Formularz przesłany pomyślnie!',
     },
-    {
-        class: 'fields',
-        name: 'Password',
-        type: 'password',
-        placeholder: 'Hasło*',
-        error: 'Hasło nie jest wystarczająco silne. Brakuje: '
+    fields: {
+        usernamePlaceholder: 'Nazwa użytkownika*',
+        firstNamePlaceholder: 'Imię',
+        lastNamePlaceholder: 'Nazwisko',
+        emailError: 'Nieprawidłowy adres e-mail.',
+        phonePlaceholder: 'Numer telefonu*', 
+        diallingCode: 'Numer kierunkowy', 
+        phonError: 'Nieprawidłowy numer telefonu.',
+        passwordPlaceholder: 'Hasło*', 
+        passwordError: 'Hasło nie jest wystarczająco silne. Brakuje: ',
+        confirmPasswordPlaceholder: 'Powtórz hasło*', 
+        confirmPasswordError: 'Hasła nie są takie same.'
     },
-    {
-        class: 'fields',
-        name: 'Confirm Password',
-        type: 'password',
-        placeholder: 'Powtórz hasło',
-        error: 'Hasła nie są takie same.'
+    selects: {
+        forFemale: 'Kobieta',
+        forMale: 'Mężczyzna',
     },
-    ],
-    selects: [{
-        class: 'selects',
-        type: 'radio',
-        name: 'gender',
-        for: 'Kobieta'
+    password: { 
+        textContent: 'Pokaż hasło'
     },
-    {
-        class: 'selects',
-        type: 'radio',
-        name: 'gender',
-        for: 'Mężczyzna'
+    buttons: {
+        valueSubmit: 'Zatwierdź',
+        valuePrevious: 'Wstecz',
+        valueNext: 'Dalej',
+        valueClose: 'Zamknij'
     }
-    ],
-    buttons: [{
-        class: 'buttons',
-        name: 'submit',
-        type: 'submit',
-        value: 'Zatwierdź'
-    },
-    {
-        class: 'buttons-multi',
-        name: 'previous',
-        type: 'previous',
-        value: 'Wstecz'
-    },
-    {
-        class: 'buttons-multi',
-        name: 'next',
-        type: 'next',
-        value: 'Dalej'
-    }
-    ]
 };
-
-export const formPagesPl: FormPageConfig[] = [
-    { step: 'Etap 1', title: 'Dane osobowe', fields: ['Username', 'First Name', 'Last Name'] },
-    { step: 'Etap 2', title: 'Dane kontaktowe', fields: ['Email', 'Phone'] },
-    { step: 'Etap 3', title: 'Hasło i potwierdzenie', fields: ['Password', 'Confirm Password'] },
-];

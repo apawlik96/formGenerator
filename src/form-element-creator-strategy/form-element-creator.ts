@@ -1,5 +1,4 @@
 import { SelectElementCreationStrategy } from "../form-element-creator/select-element-creation-strategy";
-import { InputCreationStrategy } from "../form-element-creator/input-creation-strategy";
 import { FieldElementCreationStrategy } from "../form-element-creator/field-element-creation-strategy";
 import { FormElementCreationContext } from "./form-element-creation-context";
 
@@ -9,13 +8,7 @@ export class FormElementCreation {
         switch (element.class) {
             case 'selects':
                 {
-                    const context = new FormElementCreationContext(new SelectElementCreationStrategy(new InputCreationStrategy()));
-                    context.create(form, element);
-                }
-                break;
-            case 'buttons':
-                {
-                    const context = new FormElementCreationContext(new InputCreationStrategy());
+                    const context = new FormElementCreationContext(new SelectElementCreationStrategy());
                     context.create(form, element);
                 }
                 break;
