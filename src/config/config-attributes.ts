@@ -2,7 +2,7 @@ import { translationsEn } from "./config-en";
 import { translationsPl } from "./config-pl";
 import { FormConfig, FormPageConfig } from "./config-interface";
 
-const selectedLanguage = translationsPl;
+const selectedLanguage = translationsEn;
 
 export const propertiesConfig: FormConfig  = {
     error: {

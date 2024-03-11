@@ -52,6 +52,8 @@ export class FieldElementCreationStrategy implements FormElementCreationStrategy
 
         const inputShowPass = inputCreator;
         inputShowPass.type = config.password.type;
+        inputShowPass.name = config.password.class;
+        inputShowPass.placeholder = config.password.textContent;
         showPass.appendChild(inputShowPass);
 
         const label = labelCreator;
