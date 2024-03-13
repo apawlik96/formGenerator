@@ -5,17 +5,27 @@ import { classNames } from "../config/class-name";
 
 export class SelectElementCreationStrategy implements FormElementCreationStrategy {
 
-    create(form: HTMLFormElement, element: any): void {
-        const div = new DivCreatorWithClassName().createDiv(classNames.inputDataGender);
+    private createInput(element: any): HTMLInputElement {
         const input = inputCreator;
         input.type = element.type;
         input.name = element.name;
+        return input;
+    }
+
+    private createLabel(element: any): HTMLFormElement {
         const label = labelCreator;
         label.textContent = element.for;
         label.className = element.classNameLabel;
+        return label;
+    }
 
+    create(form: HTMLFormElement, element: any): HTMLDivElement {
+        const div = new DivCreatorWithClassName().createDiv(classNames.inputDataGender);
+        const input = this.createInput(element);
+        const label = this.createLabel(element);
         div.appendChild(input);
         div.appendChild(label);
         form.appendChild(div);
+        return div;
     }
 }

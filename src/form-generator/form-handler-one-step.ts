@@ -2,7 +2,7 @@ import { FormElementCreation } from "../form-element-creator-strategy/form-eleme
 import { FormValidator } from "../validator";
 import { formCreator } from "../html-tag-name";
 import { FormSuccessMessage } from "../form-element-creator/form-success-message";
-import { FormRequiredFieldsParagraph } from "../form-element-creator/form-required-fields-parapraph";
+import { FormRequiredFieldsParagraph } from "../form-element-creator/form-required-fields-paragraph";
 import { DivCreatorWithClassName } from "../form-element-creator/div-creator";
 import { ButtonCreation } from "../form-element-creator/button-creation";
 import { classNames } from "../config/class-name";

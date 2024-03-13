@@ -21,6 +21,7 @@ test('create submit button with correct label', () => {
     button.click();
 
     // then
+    expect(button.className).toBe('buttons');    
     expect(button.textContent).toEqual('Submit');
     expect(mockClickHandler).toHaveBeenCalled();
 });
@@ -46,6 +47,7 @@ test('create previous button with correct label', () => {
     button.click();
 
     // then
+    expect(button.className).toBe('buttons');    
     expect(button.textContent).toEqual('Previous');
     expect(mockClickHandler).toHaveBeenCalled();
 });
@@ -71,6 +73,7 @@ test('create next button with correct label', () => {
     button.click();
 
     // then
+    expect(button.className).toBe('buttons');    
     expect(button.textContent).toEqual('Next');
     expect(mockClickHandler).toHaveBeenCalled();
 });
@@ -96,6 +99,7 @@ test('create close button with correct label', () => {
     button.click();
 
     // then
+    expect(button.className).toBe('buttons');    
     expect(button.textContent).toEqual('Close');
     expect(mockClickHandler).toHaveBeenCalled();
 });

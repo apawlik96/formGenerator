@@ -10,13 +10,11 @@ test('create select element with correct label', () => {
             for: 'Female'
         }]
     };
+    const expectedHTMLInput = '<input type="radio" name="gender" placeholder="Female">';
+    const expectedHTMLLabel = '<label>Female</label>';
 
     // when
     const element = new SelectElementCreationStrategy().create(propertiesConfig.selects[0]);
-
-    const expectedHTMLInput = '<input type="radio" name="gender" placeholder="Female">';
-
-    const expectedHTMLLabel = '<label>Female</label>';
 
     // then
     expect(element.outerHTML).toEqual(expectedHTMLLabel);
@@ -35,13 +33,11 @@ test('create select element with correct label', () => {
             for: 'Male'
         }]
     };
+    const expectedHTMLInput = '<input type="radio" name="gender" placeholder="Male">';
+    const expectedHTMLLabel = '<label>Male</label>';
 
     // when
     const element = new SelectElementCreationStrategy().create(propertiesConfig.selects[0]);
-
-    const expectedHTMLInput = '<input type="radio" name="gender" placeholder="Male">';
-
-    const expectedHTMLLabel = '<label>Male</label>';
 
     // then
     expect(element.outerHTML).toEqual(expectedHTMLLabel);

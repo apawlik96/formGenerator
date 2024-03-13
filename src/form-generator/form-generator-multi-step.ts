@@ -5,7 +5,7 @@ import { FormValidator } from "../validator";
 import { formCreator, titleCreator } from "../html-tag-name";
 import { DivCreatorWithClassName } from "../form-element-creator/div-creator";
 import { FormSuccessMessage } from "../form-element-creator/form-success-message";
-import { FormRequiredFieldsParagraph } from "../form-element-creator/form-required-fields-parapraph";
+import { FormRequiredFieldsParagraph } from "../form-element-creator/form-required-fields-paragraph";
 import { classNames } from "../config/class-name";
 import { config, formPages } from "../config/config-attributes";
 

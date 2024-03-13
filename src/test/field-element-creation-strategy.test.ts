@@ -10,10 +10,10 @@ test('create input element with attributes', () => {
             placeholder: 'Username'
         }]
     };
+    const expectedHTML = '<input type="text" name="Username" placeholder="Username">';
 
     // when
     const inputElement = new FieldElementCreationStrategy().createInput(propertiesConfig.fields[0]);
-    const expectedHTML = '<input type="text" name="Username" placeholder="Username">';
 
     // then
     expect(inputElement.outerHTML).toEqual(expectedHTML);
@@ -29,10 +29,10 @@ test('create input element with attributes', () => {
             placeholder: 'First Name'
         }]
     };
+    const expectedHTML = '<input type="text" name="First Name" placeholder="First Name">';
 
     // when
     const inputElement = new FieldElementCreationStrategy().createInput(propertiesConfig.fields[0]);
-    const expectedHTML = '<input type="text" name="First Name" placeholder="First Name">';
 
     // then
     expect(inputElement.outerHTML).toEqual(expectedHTML);
@@ -47,11 +47,11 @@ test('create input element with attributes', () => {
             type: 'text',
             placeholder: 'Last Name'
         }]
-    };
+    };    
+    const expectedHTML = '<input type="text" name="Last Name" placeholder="Last Name">';
 
     // when
     const inputElement = new FieldElementCreationStrategy().createInput(propertiesConfig.fields[0]);
-    const expectedHTML = '<input type="text" name="Last Name" placeholder="Last Name">';
 
     // then
     expect(inputElement.outerHTML).toEqual(expectedHTML);
@@ -67,10 +67,10 @@ test('create input element with attributes', () => {
             placeholder: 'Email*'
         }]
     };
+    const expectedHTML = '<input type="text" name="Email" placeholder="Email*">';
 
     // when
     const inputElement = new FieldElementCreationStrategy().createInput(propertiesConfig.fields[0]);
-    const expectedHTML = '<input type="text" name="Email" placeholder="Email*">';
 
     // then
     expect(inputElement.outerHTML).toEqual(expectedHTML);
@@ -86,10 +86,10 @@ test('create input element with attributes', () => {
             placeholder: 'Phone*'
         }]
     };
+    const expectedHTML = '<input type="text" name="Phone" placeholder="Phone*">';
 
     // when
     const inputElement = new FieldElementCreationStrategy().createInput(propertiesConfig.fields[0]);
-    const expectedHTML = '<input type="text" name="Phone" placeholder="Phone*">';
 
     // then
     expect(inputElement.outerHTML).toEqual(expectedHTML);
@@ -105,10 +105,10 @@ test('create input element with attributes', () => {
             placeholder: 'Password*'
         }]
     };
+    const expectedHTML = '<input type="text" name="Password" placeholder="Password*">';
 
     // when
     const inputElement = new FieldElementCreationStrategy().createInput(propertiesConfig.fields[0]);
-    const expectedHTML = '<input type="text" name="Password" placeholder="Password*">';
 
     // then
     expect(inputElement.outerHTML).toEqual(expectedHTML);
@@ -124,10 +124,10 @@ test('create input element with attributes', () => {
             placeholder: 'Confirm Password*'
         }]
     };
+    const expectedHTML = '<input type="text" name="Confirm Password" placeholder="Confirm Password*">';
 
     // when
     const inputElement = new FieldElementCreationStrategy().createInput(propertiesConfig.fields[0]);
-    const expectedHTML = '<input type="text" name="Confirm Password" placeholder="Confirm Password*">';
 
     // then
     expect(inputElement.outerHTML).toEqual(expectedHTML);
@@ -143,10 +143,10 @@ test('create label element with text content', () => {
             placeholder: 'Username'
         }]
     };
+    const expectedHTML = '<label>Username</label>';
 
     // when
     const labelElement = new FieldElementCreationStrategy().createLabel(propertiesConfig.fields[0]);
-    const expectedHTML = '<label>Username</label>';
 
     // then
     expect(labelElement.outerHTML).toEqual(expectedHTML);
@@ -162,10 +162,10 @@ test('create label element with text content', () => {
             placeholder: 'First Name'
         }]
     };
+    const expectedHTML = '<label>First Name</label>';
 
     // when
     const labelElement = new FieldElementCreationStrategy().createLabel(propertiesConfig.fields[0]);
-    const expectedHTML = '<label>First Name</label>';
 
     // then
     expect(labelElement.outerHTML).toEqual(expectedHTML);
@@ -181,10 +181,10 @@ test('create label element with text content', () => {
             placeholder: 'Last Name'
         }]
     };
+    const expectedHTML = '<label>Last Name</label>';
 
     // when
     const labelElement = new FieldElementCreationStrategy().createLabel(propertiesConfig.fields[0]);
-    const expectedHTML = '<label>Last Name</label>';
 
     // then
     expect(labelElement.outerHTML).toEqual(expectedHTML);
@@ -200,10 +200,10 @@ test('create label element with text content', () => {
             placeholder: 'Email'
         }]
     };
+    const expectedHTML = '<label>Email</label>';
 
     // when
     const labelElement = new FieldElementCreationStrategy().createLabel(propertiesConfig.fields[0]);
-    const expectedHTML = '<label>Email</label>';
 
     // then
     expect(labelElement.outerHTML).toEqual(expectedHTML);
@@ -219,10 +219,10 @@ test('create label element with text content', () => {
             placeholder: 'Phone'
         }]
     };
+    const expectedHTML = '<label>Phone</label>';
 
     // when
     const labelElement = new FieldElementCreationStrategy().createLabel(propertiesConfig.fields[0]);
-    const expectedHTML = '<label>Phone</label>';
 
     // then
     expect(labelElement.outerHTML).toEqual(expectedHTML);
@@ -238,10 +238,10 @@ test('create label element with text content', () => {
             placeholder: 'Password'
         }]
     };
+    const expectedHTML = '<label>Password</label>';
 
     // when
     const labelElement = new FieldElementCreationStrategy().createLabel(propertiesConfig.fields[0]);
-    const expectedHTML = '<label>Password</label>';
 
     // then
     expect(labelElement.outerHTML).toEqual(expectedHTML);
@@ -257,10 +257,10 @@ test('create label element with text content', () => {
             placeholder: 'Confirm Password'
         }]
     };
+    const expectedHTML = '<label>Confirm Password</label>';
 
     // when
     const labelElement = new FieldElementCreationStrategy().createLabel(propertiesConfig.fields[0]);
-    const expectedHTML = '<label>Confirm Password</label>';
 
     // then
     expect(labelElement.outerHTML).toEqual(expectedHTML);
@@ -284,10 +284,10 @@ test('create div show password checkbox with label', () => {
             for: 'showPasswordCheckbox'
         }]
     };
+    const expectedHTMLLabel = '<div class="showPass"><input type="checkbox" name="showPass" placeholder="Show password"><label>Show password</label></div>';
 
     // when
     const element = new FieldElementCreationStrategy().createShowPasswordInput(propertiesConfig.fields[0]);
-    const expectedHTMLLabel = '<div class="showPass"><input type="checkbox" name="showPass" placeholder="Show password"><label>Show password</label></div>';
 
     // then
     expect(element.outerHTML).toEqual(expectedHTMLLabel);

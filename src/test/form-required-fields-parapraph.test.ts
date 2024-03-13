@@ -1,4 +1,4 @@
-const { FormRequiredFieldsParagraph } = require('../form-element-creator/form-required-fields-parapraph')
+const { FormRequiredFieldsParagraph } = require('../form-element-creator/form-required-fields-paragraph')
 
 test('create paragraph with text content', () => {
     // given
@@ -8,11 +8,10 @@ test('create paragraph with text content', () => {
             textContent: 'Fields with * are required'
         }
     };
+    const expectedHTML = '<div class="required">Fields with * are required</div>';
 
     // when
     const paragraph = new FormRequiredFieldsParagraph().createParagraphRequiredFields(propertiesConfig.empty.class);
-
-    const expectedHTML = '<div class="required">Fields with * are required</div>';
 
     // then
     expect(paragraph.outerHTML).toEqual(expectedHTML);
