@@ -1,44 +1,44 @@
 const {FieldElementCreationStrategy} = require('../form-element-creator/field-element-creation-strategy')
+import { divCreator, selectCreator } from "../html-tag-name";
+require('jest-fetch-mock').enableMocks();
 
-test('create input element with attributes', () => {
-    // given
-    const propertiesConfig = {
-        fields: [{
-            class: 'fields',
-            name: 'Username',
-            type: 'text',
-            placeholder: 'Username'
-        }]
-    };
-    const expectedHTML = '<input type="text" name="Username" placeholder="Username">';
+describe('FieldElementCreationStrategy', () => {
+    describe('create input element with attributes', () => {
+        it('create input Username', () => {
+            // given
+            const propertiesConfig = {
+                fields: [{
+                class: 'fields',
+                name: 'Username',
+                type: 'text',
+                placeholder: 'Username'
+                }]
+            };
+        const expectedHTML = '<input type="text" name="Username" placeholder="Username">';
+        // when
+        const inputElement = new FieldElementCreationStrategy().createInput(propertiesConfig.fields[0]);
+        // then
+        expect(inputElement.outerHTML).toEqual(expectedHTML);
+    });
 
-    // when
-    const inputElement = new FieldElementCreationStrategy().createInput(propertiesConfig.fields[0]);
+        it('create input First Name', () => {
+            // given
+            const propertiesConfig = {
+                fields: [{
+                class: 'fields',
+                name: 'First Name',
+                type: 'text',
+                placeholder: 'First Name'
+                }]
+            };
+            const expectedHTML = '<input type="text" name="First Name" placeholder="First Name">';
+        // when
+        const inputElement = new FieldElementCreationStrategy().createInput(propertiesConfig.fields[0]);
+        // then
+        expect(inputElement.outerHTML).toEqual(expectedHTML);
+    });
 
-    // then
-    expect(inputElement.outerHTML).toEqual(expectedHTML);
-});
-
-test('create input element with attributes', () => {
-    // given
-    const propertiesConfig = {
-        fields: [{
-            class: 'fields',
-            name: 'First Name',
-            type: 'text',
-            placeholder: 'First Name'
-        }]
-    };
-    const expectedHTML = '<input type="text" name="First Name" placeholder="First Name">';
-
-    // when
-    const inputElement = new FieldElementCreationStrategy().createInput(propertiesConfig.fields[0]);
-
-    // then
-    expect(inputElement.outerHTML).toEqual(expectedHTML);
-});
-
-test('create input element with attributes', () => {
+it('create input Last Name', () => {
     // given
     const propertiesConfig = {
         fields: [{
@@ -57,7 +57,7 @@ test('create input element with attributes', () => {
     expect(inputElement.outerHTML).toEqual(expectedHTML);
 });
 
-test('create input element with attributes', () => {
+it('create input Email', () => {
     // given
     const propertiesConfig = {
         fields: [{
@@ -76,7 +76,7 @@ test('create input element with attributes', () => {
     expect(inputElement.outerHTML).toEqual(expectedHTML);
 });
 
-test('create input element with attributes', () => {
+it('create input Phone', () => {
     // given
     const propertiesConfig = {
         fields: [{
@@ -95,7 +95,7 @@ test('create input element with attributes', () => {
     expect(inputElement.outerHTML).toEqual(expectedHTML);
 });
 
-test('create input element with attributes', () => {
+it('create input Password', () => {
     // given
     const propertiesConfig = {
         fields: [{
@@ -114,7 +114,7 @@ test('create input element with attributes', () => {
     expect(inputElement.outerHTML).toEqual(expectedHTML);
 });
 
-test('create input element with attributes', () => {
+it('create input Confirm Password', () => {
     // given
     const propertiesConfig = {
         fields: [{
@@ -131,9 +131,11 @@ test('create input element with attributes', () => {
 
     // then
     expect(inputElement.outerHTML).toEqual(expectedHTML);
+})
 });
 
-test('create label element with text content', () => {
+describe('create input element with attributes', () => {
+it('create label Username', () => {
     // given
     const propertiesConfig = {
         fields: [{
@@ -152,7 +154,7 @@ test('create label element with text content', () => {
     expect(labelElement.outerHTML).toEqual(expectedHTML);
 });
 
-test('create label element with text content', () => {
+it('create label First Name', () => {
     // given
     const propertiesConfig = {
         fields: [{
@@ -171,7 +173,7 @@ test('create label element with text content', () => {
     expect(labelElement.outerHTML).toEqual(expectedHTML);
 });
 
-test('create label element with text content', () => {
+it('create label Last Name', () => {
     // given
     const propertiesConfig = {
         fields: [{
@@ -190,7 +192,7 @@ test('create label element with text content', () => {
     expect(labelElement.outerHTML).toEqual(expectedHTML);
 });
 
-test('create label element with text content', () => {
+it('create label Email', () => {
     // given
     const propertiesConfig = {
         fields: [{
@@ -209,7 +211,7 @@ test('create label element with text content', () => {
     expect(labelElement.outerHTML).toEqual(expectedHTML);
 });
 
-test('create label element with text content', () => {
+it('create label Phone', () => {
     // given
     const propertiesConfig = {
         fields: [{
@@ -228,7 +230,7 @@ test('create label element with text content', () => {
     expect(labelElement.outerHTML).toEqual(expectedHTML);
 });
 
-test('create label element with text content', () => {
+it('create label Password', () => {
     // given
     const propertiesConfig = {
         fields: [{
@@ -247,7 +249,7 @@ test('create label element with text content', () => {
     expect(labelElement.outerHTML).toEqual(expectedHTML);
 });
 
-test('create label element with text content', () => {
+it('create label Confirm Password', () => {
     // given
     const propertiesConfig = {
         fields: [{
@@ -264,17 +266,18 @@ test('create label element with text content', () => {
 
     // then
     expect(labelElement.outerHTML).toEqual(expectedHTML);
+})
 });
 
-test('appends div to form', () => {
+it('appends div to form', () => {
     expect(document.querySelector('.input-data')).toBeDefined();
 });
 
-test('appends div to form', () => {
+it('appends div to form', () => {
     expect(document.querySelector('.input-data-pass')).toBeDefined();
 });
 
-test('create div show password checkbox with label', () => {
+it('create div show password checkbox with label', () => {
     // given
     const propertiesConfig = {
         fields: [{
@@ -292,3 +295,55 @@ test('create div show password checkbox with label', () => {
     // then
     expect(element.outerHTML).toEqual(expectedHTMLLabel);
 })
+
+describe('fetchCountryPhoneCodes', () => {
+    global.fetch = jest.fn();
+
+    process.env.API_KEY = 'mockedAPIUrl';
+
+    const mockApiResponse = {
+        US: { country_name: 'United States', dialling_code: '+1' },
+        GB: { country_name: 'United Kingdom', dialling_code: '+44' }
+    };
+    beforeEach(() => {
+        (fetch as jest.Mock).mockClear();
+    });
+    
+    it('should fetch country phone codes and return a Map', async () => {
+        (fetch as jest.Mock) .mockResolvedValueOnce({
+            json: () => Promise.resolve(mockApiResponse)
+        });
+        const expectedMap = new Map([
+            ['United States', '+1'],
+            ['United Kingdom', '+44']
+        ]);
+        const result = await new FieldElementCreationStrategy().fetchCountryPhoneCodes();
+        expect(result).toEqual(expectedMap);
+        expect(fetch).toHaveBeenCalledTimes(1);
+        expect(fetch).toHaveBeenCalledWith(process.env.API_KEY);
+    });
+
+    it('create country options in select element', async () => {
+        const select = selectCreator;
+        (fetch as jest.Mock).mockResolvedValueOnce({
+            json: () => Promise.resolve(mockApiResponse)
+        });
+        const fieldElementCreationStrategy = new FieldElementCreationStrategy();
+        const createCountryOptions = fieldElementCreationStrategy.createCountryOptions.bind(fieldElementCreationStrategy);
+        await createCountryOptions(select);
+        expect(select.children.length).toBe(1);
+        expect(select.children[0].textContent).toBe('United States');
+        expect(select.children[0].getAttribute('value')).toBe('+1');
+        expect(select.children[1].textContent).toBe('United Kingdom');
+        expect(select.children[1].getAttribute('value')).toBe('+44');
+    });
+    });
+
+    
+it('addSelectChangeEvent', () => {
+    const fieldElementCreationStrategy = new FieldElementCreationStrategy();
+    const handler = jest.fn();
+    fieldElementCreationStrategy.addSelectChangeEvent(selectCreator, divCreator);
+    expect(handler).toHaveBeenCalled();
+});
+});

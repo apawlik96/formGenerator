@@ -1,9 +1,12 @@
-const {FormSuccessMessage} = require('../form-element-creator/form-success-message')
+const { FormSuccessMessage } = require('../form-element-creator/form-success-message')
 
-test('create div with class name form success message ', () => {
-    const formSuccessMessage = new FormSuccessMessage();
-    const popupContainer = formSuccessMessage.showSuccessMessage();
-
-    // expect(popupContainer.style.display).toBe('none');
-    expect(popupContainer).toBeDefined();
+describe('FormSuccessMessage', () => {
+    it('create div with class name form success message ', () => {
+        // given
+        const formSuccessMessage = new FormSuccessMessage();
+        // when
+        const popupContainer = formSuccessMessage.showSuccessMessage();
+        // then
+        expect(popupContainer).toBeDefined();
+    })
 });

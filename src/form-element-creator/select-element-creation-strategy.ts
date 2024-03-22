@@ -15,7 +15,7 @@ export class SelectElementCreationStrategy implements FormElementCreationStrateg
     private createLabel(element: any): HTMLFormElement {
         const label = labelCreator;
         label.textContent = element.for;
-        label.className = element.classNameLabel;
+        label.className = classNames.labelGender;
         return label;
     }
 
