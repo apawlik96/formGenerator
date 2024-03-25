@@ -1,5 +1,5 @@
 import { FormElementCreationStrategy } from "../form-element-creator-strategy/form-element-creation-strategy-interface";
-import { selectCreator, optionCreator, inputCreator, labelCreator } from "../html-tag-name";
+import { HtmlTagName } from "../html-tag-name";
 import { DivCreatorWithClassName } from "./div-creator";
 import { classNames } from "../config/class-name";
 import { config } from "../config/config-attributes";
@@ -7,8 +7,8 @@ require('dotenv').config();
 
 export class FieldElementCreationStrategy implements FormElementCreationStrategy {
 
-    private createInput(element: any): HTMLInputElement {
-        const input = inputCreator;
+    private createInput(element: any): HTMLFormElement {
+        const input = new HtmlTagName().inputCreator();
         input.type = element.type;
         input.name = element.name;
         input.placeholder = element.placeholder;
@@ -16,7 +16,7 @@ export class FieldElementCreationStrategy implements FormElementCreationStrategy
     }
 
     private createLabel(element: any): HTMLFormElement {
-        const label = labelCreator;
+        const label = new HtmlTagName().labelCreator();
         label.textContent = element.placeholder;
         return label;
     }
@@ -50,11 +50,13 @@ export class FieldElementCreationStrategy implements FormElementCreationStrategy
     private createShowPasswordInput(input: any): void {
         const showPass = new DivCreatorWithClassName().createDiv(classNames.showPassword);
 
-        const inputShowPass = inputCreator;
+        const inputShowPass = new HtmlTagName().inputCreator();
         inputShowPass.type = config.password.type;
+        inputShowPass.name = config.password.class;
+        inputShowPass.placeholder = config.password.textContent;
         showPass.appendChild(inputShowPass);
 
-        const label = labelCreator;
+        const label = new HtmlTagName().labelCreator();
         label.textContent = config.password.textContent;
         label.for = config.password.for;
 
@@ -71,10 +73,10 @@ export class FieldElementCreationStrategy implements FormElementCreationStrategy
         const divInputDataPhone  = new DivCreatorWithClassName().createDiv(classNames.inputDataPhone);
         const inputGroupPhone = new DivCreatorWithClassName().createDiv(classNames.inputGroup);
 
-        const select = selectCreator;
+        const select = new HtmlTagName().selectCreator();
         select.id = classNames.phoneCountryCodeSelect;
 
-        const optionTitle = optionCreator;
+        const optionTitle = new HtmlTagName().optionCreator();
         const diallingCodeParagraph = config.fields.find((field: any) => field.name === 'Phone');
         if (diallingCodeParagraph) {
             optionTitle.text = diallingCodeParagraph.diallingCode;
@@ -97,7 +99,7 @@ export class FieldElementCreationStrategy implements FormElementCreationStrategy
         form.appendChild(divInputDataPhone);
     }
 
-    private addSelectChangeEvent(select: HTMLSelectElement, divInputData: HTMLDivElement): void {
+    private addSelectChangeEvent(select: HTMLFormElement, divInputData: HTMLDivElement): void {
         select.addEventListener('change', () => {
             const selectedOption = select.options[select.selectedIndex];
             const inputField = divInputData.querySelector('input') as HTMLInputElement;
@@ -107,14 +109,16 @@ export class FieldElementCreationStrategy implements FormElementCreationStrategy
         });
     }
 
-    private async createCountryOptions(select: HTMLSelectElement) {
-        const countryTelMap = await this.fetchCountryPhoneCodes();
-        countryTelMap.forEach((diallingCode: string, countryName: string) => {
-            const option = optionCreator;
-            option.text = `${countryName}`;
-            option.value = `${diallingCode}`;
-            select.appendChild(option);
-        });
+    private async createCountryOptions(select: HTMLFormElement) { 
+        const countryTelMap = await this.fetchCountryPhoneCodes(); 
+        let htmlTagName = new HtmlTagName(); 
+        countryTelMap.forEach((diallingCode: string, countryName: string) => { 
+            const option = htmlTagName.optionCreator(); 
+            option.text = `${countryName}`; 
+            option.value = `${diallingCode}`; 
+            select.appendChild(option); 
+        }); 
+        return select; 
     }
 
     private async fetchCountryPhoneCodes(): Promise<Map<string, string>> {

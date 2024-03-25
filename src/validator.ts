@@ -8,19 +8,9 @@ export class FormValidator {
         return emailRegex.test(email);
     }
 
-    validationNumber(): any {
-        const phoneInput = document.querySelector('input[name="Phone"]') as HTMLInputElement;
-        const phoneInputValue = phoneInput.value;
-        var selectElement = document.getElementById('phoneCountryCodeSelect') as HTMLSelectElement;
-        if (selectElement) {
-            var selectedOption = selectElement.options[selectElement.selectedIndex];
-            var selectedValue = selectedOption.value;
-            const phoneNumber = phoneInputValue.slice(selectedValue.length);
-            const phoneRegex = /^\d+$/;
-            return phoneRegex.test(phoneNumber);
-        } else {
-            console.error("Select element not found!");
-        }
+    validationNumber(phoneNumber: string): boolean {
+        const phoneRegex = /^\+\d{8,}$/;
+        return phoneRegex.test(phoneNumber);
     }
 
     arePasswordsMatching(): any {
@@ -43,29 +33,26 @@ export class FormValidator {
         return missingSigns.join(', ');
     }
 
-    createErrorParagraph(validationError: string, inputElement: any): void  {
+    createErrorParagraph(validationError: string, inputElement: any): HTMLParagraphElement   {
         const errorParagraphId = `${inputElement.name}-error`;
         let errorParagraph = document.getElementById(errorParagraphId) as HTMLParagraphElement;
-        if (errorParagraph === null || errorParagraph === undefined) {
-            errorParagraph = document.createElement('p');
-            errorParagraph.id = errorParagraphId;
-            errorParagraph.textContent = validationError;
-            const inputElementNode = inputElement.parentNode as Node;
-            inputElementNode.insertBefore(errorParagraph, inputElement.nextSibling);
-        } else {
-            console.error("Select element not found.");
-        }
+        errorParagraph = document.createElement('p');
+        errorParagraph.id = errorParagraphId;
+        errorParagraph.textContent = validationError;
+        const inputElementNode = inputElement.parentNode as Node;
+        inputElementNode.insertBefore(errorParagraph, inputElement.nextSibling);
+        return errorParagraph;
     }
 
     removeErrorParagraph(errorParagraph: HTMLElement): void  {
         if (errorParagraph !== null && errorParagraph !== undefined) {
-            errorParagraph.remove();
+            return errorParagraph.remove();
         } else {
             console.error("Error paragraph is null or undefined!");
         }
     }
 
-    clearExistingError(inputElement: HTMLInputElement): void {
+    clearExistingError(inputElement: HTMLFormElement): void {
         const errorParagraphId = `${inputElement.name}-error`;
         const errorParagraph = document.getElementById(errorParagraphId) as HTMLParagraphElement;
 
@@ -76,7 +63,7 @@ export class FormValidator {
         let isFormValid = true;
 
         Array.from(inputElements).forEach((inputElement) => {
-            this.clearExistingError(inputElement as HTMLInputElement);
+            this.clearExistingError(inputElement as HTMLFormElement);
 
             const isValid = this.isValid(inputElement as HTMLInputElement);
 
@@ -84,7 +71,6 @@ export class FormValidator {
                 isFormValid = false;
             }
         });
-
         return isFormValid;
     }
 
@@ -95,7 +81,7 @@ export class FormValidator {
         let isFormValid = true;
 
         for (const inputElement of inputArray) {
-            this.clearExistingError(inputElement as HTMLInputElement);
+            this.clearExistingError(inputElement as HTMLFormElement);
 
             if (!this.isValid(inputElement as HTMLInputElement)) {
                 isFormValid = false;
@@ -118,7 +104,7 @@ export class FormValidator {
                     isValid = this.isEmailValid(inputElement.value.trim());
                     break;
                 case 'Phone':
-                    isValid = this.validationNumber();
+                    isValid = this.validationNumber(inputElement.value.trim());
                     break;
                 case 'Confirm Password':
                     isValid = this.arePasswordsMatching();

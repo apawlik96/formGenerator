@@ -2,10 +2,10 @@ import { ButtonCreation } from "../form-element-creator/button-creation";
 import { FormElementCreation } from "../form-element-creator-strategy/form-element-creator";
 import { formStylesOneStep } from "../form-styles/form-styles-one-step";
 import { FormValidator } from "../validator";
-import { formCreator, titleCreator } from "../html-tag-name";
+import { HtmlTagName } from "../html-tag-name";
 import { DivCreatorWithClassName } from "../form-element-creator/div-creator";
 import { FormSuccessMessage } from "../form-element-creator/form-success-message";
-import { FormRequiredFieldsParagraph } from "../form-element-creator/form-required-fields-parapraph";
+import { FormRequiredFieldsParagraph } from "../form-element-creator/form-required-fields-paragraph";
 import { classNames } from "../config/class-name";
 import { config, formPages } from "../config/config-attributes";
 
@@ -82,10 +82,10 @@ export class FormGeneratorMultiStep {
     }
 
     createPage = async (title: string, fields: string[]) => {
-        const form = formCreator;
+        const form = new HtmlTagName().formCreator();
         form.className = classNames.personalDataForm;
 
-        const pageTitle = titleCreator;
+        const pageTitle = new HtmlTagName().titleCreator();
         pageTitle.textContent = title;
         form.appendChild(pageTitle);
 
