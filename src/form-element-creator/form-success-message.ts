@@ -1,6 +1,6 @@
 import { DivCreatorWithClassName } from "./div-creator";
 import { ButtonCreation } from "./button-creation";
-import { paragraphCreator } from "../html-tag-name";
+import { HtmlTagName } from "../html-tag-name";
 import { classNames } from "../config/class-name";
 import { config } from "../config/config-attributes";
 
@@ -9,7 +9,7 @@ export class FormSuccessMessage {
     showSuccessMessage = (): void => {
         const popupContainer = new DivCreatorWithClassName().createDiv(classNames.popupContainer);
 
-        const successMessage = paragraphCreator;
+        const successMessage = new HtmlTagName().paragraphCreator();
         successMessage.className = classNames.successMessageParagraph;
         successMessage.textContent = config.popup.textContent;
 

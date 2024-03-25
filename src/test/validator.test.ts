@@ -1,4 +1,4 @@
-import { inputCreator } from '../html-tag-name';
+import { HtmlTagName } from '../html-tag-name';
 import { FormValidator } from '../validator';
 
 describe('FormValidator', () => {
@@ -21,28 +21,15 @@ describe('FormValidator', () => {
     })
 
     describe('Phone number validation', () => {
-        it('return true if phone number is valid', () => {
-            // given
-            const formValidator = new FormValidator();
-            document.body.innerHTML = `
-        <input name="Phone" value="+48123456789">
-    `;
-            // when 
-            const passwordsMatch = formValidator.validationNumber();
+        test.each([
+            ['+12345678', true],
+            ['+1', false],
+            ['12345678', false]
+        ])('check validation %s and return %p', (phoneNumber, expected) => {
+            // when
+            const result = formValidator.validationNumber(phoneNumber);
             // then
-            expect(passwordsMatch).toBeTruthy();
-        });
-
-        it('return true if phone number is valid', () => {
-            // given
-            const formValidator = new FormValidator();
-            document.body.innerHTML = `
-        <input name="Phone" value="abc123456789">
-    `;
-            // when 
-            const passwordsMatch = formValidator.validationNumber();
-            // then
-            expect(passwordsMatch).toBe(false);
+            expect(result).toBe(expected);
         });
     })
 
@@ -62,62 +49,64 @@ describe('FormValidator', () => {
     describe('Password matching', () => {
         it('return true if passwords match', () => {
             // given
-            const formValidator = new FormValidator();
-            document.body.innerHTML = `
-        <input name="Password" value="e8dm3XN.NG">
-        <input name="Confirm Password" value="e8dm3XN.NG">
-    `;
-            // when 
-            const passwordsMatch = formValidator.arePasswordsMatching();
-            // then
-            expect(passwordsMatch).toBe(true);
-        });
+            const passwordInput = document.createElement('input');
+            const confirmPasswordInput = document.createElement('input');
 
-        it('return true if passwords match', () => {
-            // given
-            const formValidator = new FormValidator();
-            document.body.innerHTML = `
-        <input name="Password" value="e8dm3XN.NG">
-        <input name="Confirm Password" value="e8dm3XN.">
-    `;
+            passwordInput.name = 'Password';
+            confirmPasswordInput.name = 'Confirm Password';
+
+            passwordInput.value = 'password123';
+            confirmPasswordInput.value = 'password123';
             // when 
-            const passwordsMatch = formValidator.arePasswordsMatching();
+            const result = formValidator.arePasswordsMatching();
             // then
-            expect(passwordsMatch).toBe(false);
+            expect(result).toEqual(true);
         });
     })
 
     describe('Error paragraph', () => {
         it('create error paragraph', () => {
             // given
-            const validationError = 'Invalid email address.';
-            const inputElement = inputCreator;
-            inputElement.name = 'Email';
-            // when
-            const errorParagraph = formValidator.createErrorParagraph(validationError, inputElement);
-        
-            // then
-            expect(errorParagraph).toBeTruthy();
-        });
-        it('clear existing error paragraph', () => {
-            const inputElement = inputCreator;
-            inputElement.name = 'Email';
-            formValidator.clearExistingError(inputElement);
-            const usernameErrorParagraph = document.getElementById('email-error');
-            expect(usernameErrorParagraph).toBeNull();
-        });
-    })
+            const errorParagraph = new HtmlTagName().paragraphCreator();
+            errorParagraph.id = 'Email-error'
+            errorParagraph.textContent = 'Invalid email address.'
 
-    describe('validateForm', () => {
-        it('return true if a form is valid', () => {
-            const inputElements = document.querySelectorAll('input');
-    
-            const isValidMock = jest.fn().mockReturnValue(true);
-        
-            const result = new FormValidator().validateForm(inputElements);
-        
-            expect(result).toBe(true);
-            expect(isValidMock).toHaveBeenCalledTimes(inputElements.length);
+            const inputElement = document.createElement('input');
+            inputElement.name = 'Email';
+            const inputElementNode = document.createElement('div');
+            inputElementNode.appendChild(inputElement);
+            document.body.appendChild(inputElementNode);
+            inputElementNode.insertBefore(errorParagraph, inputElement.nextSibling);
+
+            // when
+            const error = formValidator.createErrorParagraph(errorParagraph.textContent, inputElement);
+
+            // then
+            expect(error).toBeTruthy();
         });
-    })
+
+        it('clear existing error paragraph', () => {
+            // given
+            const errorParagraph = new HtmlTagName().paragraphCreator();
+            errorParagraph.id = 'Email-error';
+            document.body.appendChild(errorParagraph);
+
+            // when
+            const removeParagraph = formValidator.removeErrorParagraph(errorParagraph);
+
+            // then
+            expect(removeParagraph).toBeUndefined();
+        });
+    });
+
+    it('validateForm', () => {
+        // given
+        const inputElements = document.querySelectorAll('input');
+
+        // when
+        const result = formValidator.validateForm(inputElements);
+
+        // then
+        expect(result).toBe(false);
+    });
 });

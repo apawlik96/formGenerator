@@ -1,13 +1,33 @@
-import { ElementCreator } from "./form-element-creator/element-creator";
+import { ElementCreator } from "./form-element-creator/element-creator"; 
+const elementCreator = new ElementCreator(); 
 
-const elementCreator = new ElementCreator();
-
-export const buttonCreator = elementCreator.createElement('button') as HTMLButtonElement;
-export const divCreator = elementCreator.createElement('div') as HTMLDivElement;
-export const selectCreator = elementCreator.createElement('select') as HTMLSelectElement;
-export const inputCreator = elementCreator.createElement('input') as HTMLInputElement;
-export const optionCreator = elementCreator.createElement('option') as HTMLFormElement;
-export const titleCreator = elementCreator.createElement('h2') as HTMLElement;
-export const formCreator = elementCreator.createElement('form') as HTMLFormElement;
-export const labelCreator = elementCreator.createElement('label') as HTMLFormElement;
-export const paragraphCreator = elementCreator.createElement('p') as HTMLElement;
+export class HtmlTagName { 
+    elementCreator = new ElementCreator(); 
+    divCreator(): HTMLFormElement { 
+        return elementCreator.createElement('div') as HTMLFormElement; 
+    }
+    buttonCreator(): HTMLFormElement { 
+        return elementCreator.createElement('button') as HTMLFormElement;
+    } 
+    selectCreator(): HTMLFormElement { 
+        return elementCreator.createElement('select') as HTMLFormElement;
+    }
+    inputCreator(): HTMLFormElement { 
+        return elementCreator.createElement('input') as HTMLFormElement; 
+    }
+    optionCreator(): HTMLFormElement { 
+        return elementCreator.createElement('option') as HTMLFormElement; 
+    } 
+    titleCreator(): HTMLFormElement { 
+        return elementCreator.createElement('h2') as HTMLFormElement; 
+    } 
+    formCreator(): HTMLFormElement { 
+        return elementCreator.createElement('form') as HTMLFormElement;
+    } 
+    labelCreator(): HTMLFormElement { 
+        return elementCreator.createElement('label') as HTMLFormElement;
+    } 
+    paragraphCreator(): HTMLFormElement { 
+        return elementCreator.createElement('p') as HTMLFormElement;
+    } 
+}

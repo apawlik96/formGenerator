@@ -1,6 +1,6 @@
 import { FormElementCreation } from "../form-element-creator-strategy/form-element-creator";
 import { FormValidator } from "../validator";
-import { formCreator } from "../html-tag-name";
+import { HtmlTagName } from "../html-tag-name";
 import { FormSuccessMessage } from "../form-element-creator/form-success-message";
 import { FormRequiredFieldsParagraph } from "../form-element-creator/form-required-fields-paragraph";
 import { DivCreatorWithClassName } from "../form-element-creator/div-creator";
@@ -26,7 +26,7 @@ export class FormHandlerOneStep {
         const title = new DivCreatorWithClassName().createDiv(classNames.titleOneStep);
         title.textContent = config.titleOneStep.textContent;
 
-        const form = formCreator;
+        const form = new HtmlTagName().formCreator();
         const elements = [...config.selects, ...config.fields];
 
         for (const element of elements) {

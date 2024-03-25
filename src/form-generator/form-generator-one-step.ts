@@ -1,5 +1,5 @@
 import { formStylesOneStep } from "../form-styles/form-styles-one-step";
-import { formCreator } from "../html-tag-name";
+import { HtmlTagName } from "../html-tag-name";
 import { FormHandlerOneStep } from "./form-handler-one-step";
 
 export class FormGeneratorOneStep {
@@ -16,7 +16,7 @@ export class FormGeneratorOneStep {
     }
 
     async generateForm(): Promise<HTMLFormElement | undefined> {
-        const form = await formCreator;
+        const form = await new HtmlTagName().formCreator();
         if (typeof document !== 'undefined') {
             document.body.appendChild(form);
             return form;
